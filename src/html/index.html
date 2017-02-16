@@ -5,8 +5,16 @@
 	</head>
 	<body>
 		<div>
-			<h1 onclick="test()">Click me</h1>
+			<form action="" onSubmit="JavaScript:sayHelloToIntu(document.getElementById('question').value)">
+				<h1>Self JavaScript SDK</h1>
+				<fieldset>
+					<legend>Intu Client</legend>
+					<label for="question">Question:</label>
+					<input id="question" type="text">
+					<input type="submit" value="Ask">
+				</fieldset>
+			</form>
 		</div>
-	<script type="text/javascript" src="../js/TopicClient.js"></script>
+	<script data-main="../js/Main" type="text/javascript" src="../js/require.js" async="true"></script>
 	</body>
 </html>

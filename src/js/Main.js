@@ -1,0 +1,2 @@
+requirejs(["TopicClient"], function(TopicClient) {
+});
