@@ -21,23 +21,26 @@ function requestSubscription(webSocket, subscriptionType) {
 	// Construct a query object containing the type of connection that is desired
 
 	var msg = {
-		"targets": ["\"" + subscriptionType + "\""],
+		"targets": [subscriptionType],
 		"msg": "subscribe",
 		"origin": "/."
-	}
+	};
+	webSocket.send(JSON.stringify(msg));
 }
 
 function sayHelloToIntu(message) {
 	var intuSocket = new WebSocket('ws://' + host + ':' + port + '/stream?selfId='
-				       + selfId + '&orgId=' + orgId + '&token=' + token)
+				       + selfId + '&orgId=' + orgId + '&token=' + token);
 
 	intuSocket.onopen = function(event) {
-		doHandshake(intuSocket, message);
 		console.log('Performing handshake:' + intuSocket.toString());
-		console.log('Subscribing to the log')
-		requestSubscription(intuSocket, 'log')
-		console.log('Subscribing to the blackboard stream')
-		requestSubscription(intuSocket, 'blackboard-stream')
+		doHandshake(intuSocket, message);
+		console.log('Handshake complete, readyState = ' + intuSocket.readyState);
+		console.log('Protocol selected by the server = ' + intuSocket.protocol);
+		console.log('Subscribing to the log');
+		requestSubscription(intuSocket, 'log');
+		console.log('Subscribing to the blackboard stream');
+		requestSubscription(intuSocket, 'blackboard-stream');
 	}
 
 	intuSocket.onmessage = function(event) {
