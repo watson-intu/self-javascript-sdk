@@ -47,6 +47,14 @@ TopicClientInstance.prototype = {
 		console.log("TopicClient subscription called!");
 	},
 
+	unsubscribe: function(path) {
+		var msg = {
+			"msg" : "unsubscribe"
+		};
+
+		console.log("Unsubscribing: " + path);
+	},
+
 	publish: function(path, msg, persisted) {
 		console.log("TopicClient publishing data!");
 	},
