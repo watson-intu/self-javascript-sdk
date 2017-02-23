@@ -5,34 +5,40 @@ token='';
 orgId='';
 
 function TopicClientInstance() {
-	this.socket = new WebSocket('ws://' + host + ':' + port + '/stream?selfId=' + selfId + '&orgId=' + orgId + '&token=' + token);
-	this.socket.onopen = function(event) {
-		console.log('Performing handshake:');
-		doHandshake(this.socket, message);
-		console.log('Handshake complete, readyState = ' + this.socket.readyState);
-		console.log('Protocol selected by the server = ' + this.socket.protocol);
-		console.log('Subscribing to the log');
-		requestSubscription(this.socket, 'log');
-		console.log('Subscribing to the blackboard stream');
-		requestSubscription(this.socket, 'blackboard-stream');
+	// TODO: The path to the WebSocket server could be an argument
+	var socket = new WebSocket('ws://' + host + ':' + port + '/stream?selfId=' + selfId + '&orgId=' + orgId + '&token=' + token);
+
+	socket.onopen = function(event) {
+		console.log('Performing WebSocket handshake:');
+		var msg = {
+			"targets": [""],
+			"msg": "query",
+			"request": "1",
+			"origin": "/."
+		};
+
+		socket.send(JSON.stringify(msg));
+		console.log('Handshake complete, readyState = ' + socket.readyState);
+		console.log('Handshake complete, protocol selected by the server = ' + socket.protocol);
 	}
 
-	this.socket.onmessage = function(event) {
+	socket.onmessage = function(event) {
 		console.log('Received a response from the server!');
 		console.log(JSON.parse(event.data));
 	}
 
-	this.socket.onerror = function(event) {
+	socket.onerror = function(event) {
 		console.log('An error occurred: ' + JSON.parse(event.data));
 	}
 
-	this.socket.onclose = function(event) {
+	socket.onclose = function(event) {
 		console.log('Closing the connection: ' + JSON.parse(event.data));
 		socket.close();
 	}
 
 	console.log("TopicClient has been instantiated!!");
 }
+
 
 TopicClientInstance.prototype = {
 	constructor: TopicClientInstance,
@@ -61,19 +67,9 @@ TopicClientInstance.prototype = {
 
 	onPong: function(buffer) {
 		console.log("TopicClient onPong called");
-	},
-
-	doHandshake: function() {
-		var msg = {
-			"targets": [""],
-			"msg": "query",
-			"request": "1",
-			"origin": "/."
-		};
-
-		this.socket.send(JSON.stringify(msg));
 	}
 }
+
 
 var TopicClient = (function () {
 	var instance;
