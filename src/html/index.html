@@ -5,6 +5,7 @@
 		<script src="../js/SensorManager.js" type="text/javascript"></script> 
 		<script src="../js/TopicClient.js" type="text/javascript"></script>
 		<script src="../js/Map.js" type="text/javascript"></script>
+		<script src="../js/KeyboardSensor.js" type="text/javascript"></script>
 	</head>
 	<body>
 		<div>
@@ -21,9 +22,12 @@
 	<script data-main="../js/Main" type="text/javascript" src="../js/require.js" async="true"></script>
 	<script type="text/javascript">
 		var sensorMap = new Map;
+		var sensorOverrideMap = new Map;
+
+		var keyboard = new KeyboardSensor();
 		SensorManager.getInstance().getTest();
 		SensorManager.getInstance().getTest2();
-		SensorManager.getInstance().addSensor("sensor", true);
+		SensorManager.getInstance().addSensor(keyboard, true);
 		SensorManager.getInstance().getSensors();
 	</script>
 	</body>

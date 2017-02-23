@@ -6,7 +6,17 @@ SensorManagerInstance.prototype = {
 	constructor: SensorManagerInstance,
 
 	addSensor: function(sensor, override) {
-		sensorMap.put(sensor, override);
+		var msg = {
+			"event" : "add_sensor_proxy",
+			"sensorId" : sensor.sensorId,
+			"name" : sensor.sensorName,
+			"data_type" : sensor.dataType,
+			"binary_type" : sensor.binaryType,
+			"override" : override
+		};
+		TopicClient.getInstance().publish("sensor-manager", msg, false);
+		sensorMap.put(sensor.sensorId, sensor);
+		sensorOverrideMap.put(sensor.sensorId, override);
 	},
 
 	getSensors: function() {

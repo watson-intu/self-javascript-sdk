@@ -13,6 +13,10 @@ TopicClientInstance.prototype = {
 
 	subscribe: function(path, callback) {
 		console.log("TopicClient subscription called!");
+	},
+
+	publish: function(path, msg, persisted) {
+		console.log("TopicClient publishing data!");
 	}
 }
 
