@@ -23,11 +23,17 @@
 		</div>
 	<script data-main="../js/Main" type="text/javascript" src="../js/require.js" async="true"></script>
 	<script type="text/javascript">
-		//var sensorMap = new Map;
-		//var sensorOverrideMap = new Map;
+		var sensorMap = new Map;
+		var sensorOverrideMap = new Map;
 		var blackboardMap = new Map;
+		var subscriptionMap = new Map;
+
+		var sampleCallback = function() { return true; };
 
 		var topicClient = TopicClient.getInstance();
+		topicClient.send('Hello there');
+		topicClient.subscribe('log', sampleCallback);
+		topicClient.publish('log', {'key': 'value'}, true);
 		//var keyboard = new KeyboardSensor();
 		//SensorManager.getInstance().addSensor(keyboard, true);
 		//SensorManager.getInstance().getSensors();
