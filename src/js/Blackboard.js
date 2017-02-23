@@ -72,7 +72,7 @@ BlackboardInstance.prototype = {
 			"event" : "add_object",
 			"type" : thing.thingType,
 			"thing" : thing.serialize(),
-			if(thing.getParentId() != undefined) {
+			if(thing.getParentId() != "") {
 				"parent" : thing.parentId;
 			}
 		};
