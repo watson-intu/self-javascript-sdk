@@ -4,6 +4,39 @@ selfId='';
 token='';
 orgId='';
 
+function TopicClientInstance() {
+	console.log("TopicClient has been instantiated!!");
+}
+
+TopicClientInstance.prototype = {
+	constructor: TopicClientInstance,
+
+	subscribe: function(path, callback) {
+		console.log("TopicClient subscription called!");
+	}
+}
+
+var TopicClient = (function () {
+	var instance;
+
+	function createInstance() {
+		var object = new TopicClientInstance();
+		return object;
+	}
+
+	return {
+		getInstance: function() {
+			if(!instance) {
+				instance = createInstance();
+			}
+
+			return instance;
+		}
+	};
+})();
+
+
+
 function doHandshake(webSocket, message) {
 	// Construct a message object containing the data the server needs
 	var msg = {

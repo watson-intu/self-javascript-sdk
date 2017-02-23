@@ -10,7 +10,11 @@ SensorManagerInstance.prototype = {
 	},
 
 	getTest2: function() {
-		console.log("GetTest2 hit!");
+		console.log("getTest2 hit!");
+	},
+
+	start: function() {
+		TopicClient.getInstance().subscribe("sensor-manager", getTest);
 	}
 }
 
