@@ -1,17 +1,17 @@
-function ThingCategory() {
+var ThingCategory = {
 	INVALID : -1,
 	PERCEPTION : 0,
 	AGENCY : 1,
 	MODEL : 2
-}
+};
 
-function ThingEventType() {
+var ThingEventType = {
 	NONE : 0,
 	ADDED : 1,
 	REMOVED : 2,
 	STATE : 4,
 	IMPORTANCE : 8
-}
+};
 
 function S4() {
 	return (((1+Math.random())*0x10000)|0).toString(16).substring(1); 
@@ -22,7 +22,7 @@ function GUID() {
 	return guid;
 }
 
-function Thing() {
+var Thing = {
 	thingType : "IThing",
 	category : ThingCategory.PERCEPTION,
 	guid : new GUID(),
@@ -34,6 +34,64 @@ function Thing() {
 	data_type : "",
 	data : {},
 	parentId : "",
+
+	setThingType : function(value) {
+		this.thingType = value;
+	},
+	setCategory : function(value) {
+		this.category = value;
+	},
+	setGUID : function(value) {
+		this.guid = value;
+	},
+	setImportance : function(value) {
+		this.importance = value;
+	},
+	setState : function(value) {
+		this.state = value;
+	},
+	setCreateTime : function(value) {
+		this.create_time = value;
+	},
+	setLifeSpan : function(value) {
+		this.life_span = value;
+	},
+	setBody : function(value) {
+		this.body = value;
+	},
+	setDataType : function(value) {
+		this.data_type = value
+	},
+	setData : function(value) {
+		this.data = value
+	},
+	setParentId : function(value) {
+		this.parentId = value;
+	},
+
+	deserialize : function(payload) {
+		var json = JSON.parse(payload);
+		this.body = payload;
+		this.type = json["Type_"];
+		this.category = json["m_eCategory"];
+		this.guid = json["m_GUID"];
+		this.state = json["m_State"];
+		if(json.hasOwnProperty('m_fImportance')) {
+			this.importance = json["m_fImportance"];
+		}
+		if(json.hasOwnProperty('m_CreateTime')) {
+			this.create_time = json["m_CreateTime"];
+		}
+		if(json.hasOwnProperty('m_fLifeSpan')) {
+			this.life_span = json["m_fLifeSpan"];
+		}
+		if(json.hasOwnProperty('m_DataType')) {
+			this.data_type = json["m_DataType"];
+		}
+		if(json.hasOwnProperty('m_Data')) {
+			this.data = json["m_Data"];
+		}
+	},
 
 	"getThingType" : function() {
 		return this.thingType;
@@ -67,5 +125,29 @@ function Thing() {
 	},
 	"getParentId" : function() {
 		return this.parentId;
+	},
+
+	"serialize" : function() {
+
+		var msg = {};
+
+		for(var key in this.body) {
+			var value = this.body[key];
+			msg[key] = value;
+		}
+
+		msg["Type_"] = this.thingType;
+		msg["m_eCategory"] = this.category;
+		msg["m_GUID"] = this.guid;
+		msg["m_fImportance"] = this.importance;
+		msg["m_State"] = this.state;
+		msg["m_fLifeSpan"] = this.life_span;
+
+		if(this.data_type != "") {
+			msg["m_DataType"] = this.data_type;
+			msg["m_Data"] = this.data;
+		}
+
+		return msg;
 	}
 }

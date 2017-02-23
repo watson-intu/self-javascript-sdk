@@ -1,8 +1,8 @@
-function Subscriber(callback, thing_event, path) {
-	callback : callback,
-	thing_event : thing_event,
-	path : path
-};
+var Subscriber = function(callback, thing_event, path) {
+	this.callback = callback;
+	this.thing_event = thing_event;
+	this.path = path;
+}
 
 function BlackboardInstance() {
 	console.log("Blackboard has been instantiated!!");
@@ -67,18 +67,18 @@ BlackboardInstance.prototype = {
 		}
 	},
 
-	addThing: function(thing, path) {
-		var msg = {
-			"event" : "add_object",
-			"type" : thing.thingType,
-			"thing" : thing.serialize(),
-			if(thing.getParentId() != "") {
-				"parent" : thing.parentId;
-			}
-		};
+	// addThing: function(thing, path) {
+	// 	var msg = {
+	// 		"event" : "add_object",
+	// 		"type" : thing.thingType,
+	// 		"thing" : thing.serialize(),
+	// 		if(thing.parentId != "") {
+	// 			"parent" : thing.parentId;
+	// 		}
+	// 	};
 
-		TopicClient.getInstance().publish(path + "blackboard", msg, false);
-	},
+	// 	TopicClient.getInstance().publish(path + "blackboard", msg, false);
+	// },
 
 	removeThing: function(thing, path) {
 		var msg = {
