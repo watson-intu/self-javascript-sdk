@@ -71,6 +71,23 @@ SensorManagerInstance.prototype = {
 		TopicClient.getInstance().unsubscribe("sensor-manager");
 	},
 
+	onReconnect: function() {
+		for(var i = 0; i++ < sensorMap.size; sensorMap.next()) {
+			var sensor = sensorMap.value();
+			var override = sensorOverrideMap.get(sensor.sensorId);
+			var msg = {
+				"event" : "add_sensor_proxy",
+				"sensorId" : sensor.sensorId,
+				"name" : sensor.sensorName,
+				"data_type" : sensor.dataType,
+				"binary_type" : sensor.binaryType,
+				"override" : override
+			};
+
+			TopicClient.getInstance().publish("sensor-manager", msg, false);
+		}
+	},
+
 	start: function() {
 		TopicClient.getInstance().subscribe("sensor-manager", onEvent);
 	}
