@@ -5,6 +5,16 @@ function SensorManagerInstance() {
 SensorManagerInstance.prototype = {
 	constructor: SensorManagerInstance,
 
+	addSensor: function(sensor, override) {
+		sensorMap.put(sensor, override);
+	},
+
+	getSensors: function() {
+		for(var i = 0; i++ < sensorMap.size; sensorMap.next()) {
+			console.log(sensorMap.key() + ": " + sensorMap.value());
+		}
+	},
+
 	getTest: function() {
 		console.log("getTest hit!");
 	},
