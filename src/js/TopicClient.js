@@ -58,6 +58,16 @@ function TopicClientInstance() {
 TopicClientInstance.prototype = {
 	constructor: TopicClientInstance,
 
+
+	sendMessage: function(msg) {
+		msg['origin'] = selfId + '/.';
+		var socket = this.getSocket();
+		socket.onopen = function(data) {
+			socket.send(JSON.stringify(msg));
+			console.log('Sent message: ' + JSON.stringify(msg));
+		}
+	},
+
 	subscribe: function(path, callback) {
 		if (subscriptionMap.get(path) == undefined) {
 			subscriptionMap.put(path, callback);
@@ -67,11 +77,7 @@ TopicClientInstance.prototype = {
 		targets = [path];
 		data['targets'] = targets;
 		data['msg'] = 'subscribe';
-		var socket = this.getSocket();
-		socket.onopen = function(event) {
-			socket.send(JSON.stringify(data));
-			console.log('Subscribing: ' + JSON.stringify(data));
-		}
+		this.sendMessage(data);
 
 		console.log("TopicClient subscription called!");
 	},
@@ -96,7 +102,6 @@ TopicClientInstance.prototype = {
 	},
 
 	publish: function(path, msg, persisted) {
-		console.log("TopicClient publishing data!");
 		data = {};
 		targets = [path];
 		data['targets'] = targets;
@@ -104,12 +109,8 @@ TopicClientInstance.prototype = {
 		data['data'] = JSON.stringify(msg);
 		data['binary'] = false;
 		data['persisted'] = persisted;
-		console.log(data);
-		var socket = this.getSocket();
-		socket.onopen = function(event) {
-			socket.send(JSON.stringify(data));
-			console.log('Published data: ' + JSON.stringify(data));
-		}
+		this.sendMessage(data);
+
 	},
 
 	publishBinary: function(path, msg, persisted) {
@@ -118,16 +119,6 @@ TopicClientInstance.prototype = {
 
 	onPong: function(buffer) {
 		console.log("TopicClient onPong called");
-	},
-
-	send: function(msg) {
-		console.log('Sending message: ' + msg);
-		msg['origin'] = selfId + '/.';
-		var socket = this.getSocket();
-		socket.onopen = function(msg) {
-			socket.send(JSON.stringify(msg));
-			console.log('Sent message: ' + msg);
-		}
 	},
 
 	sendBinary: function(payload) {
