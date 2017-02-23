@@ -65,6 +65,45 @@ BlackboardInstance.prototype = {
 				}
 			}
 		}
+	},
+
+	addThing: function(thing, path) {
+		var msg = {
+			"event" : "add_object",
+			"type" : thing.thingType,
+			"thing" : thing.serialize(),
+			if(thing.getParentId() != undefined) {
+				"parent" : thing.parentId;
+			}
+		};
+
+		TopicClient.getInstance().publish(path + "blackboard", msg, false);
+	},
+
+	removeThing: function(thing, path) {
+		var msg = {
+			"event" : "remove_object",
+			"thing_guid" : thing.guid
+		};
+		TopicClient.getInstance().publish(path + "blackboard", msg, false);
+	},
+
+	setState: function(thing, state, path) {
+		var msg = {
+			"event" : "set_object_state",
+			"thing_guid" : thing.guid,
+			"state" : state
+		};
+		TopicClient.getInstance().publish(path + "blackboard", msg, false);
+	},
+
+	setImportance: function(thing, importance, path) {
+		var msg = {
+			"event" : "set_object_importance",
+			"thing_guid" : thing.guid,
+			"importance" : importance
+		};
+		TopicClient.getInstance().publish(path + "blackboard", msg, false);
 	}
 
 }
