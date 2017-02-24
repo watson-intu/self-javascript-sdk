@@ -62,8 +62,22 @@ SensorManagerInstance.prototype = {
 	},
 
 	onEvent: function(msg) {
-		console.log("onEvent hit in SensorManager!");
-		console.log(msg);
+		var payload = JSON.stringify(msg);
+		var data = JSON.parse(msg["data"]);
+		if(sensorMap.get(data["sensorId"]) != undefined) {
+			if(data["event"] == "start_sensor") {
+				sensorMap.get(data["sensorId"]).onStart();
+			}
+			else if(data["event"] == "stop_sensor") {
+				sensorMap.get(data["sensorId"]).onStop();
+			}
+			else {
+				console.log("Could not interpet event for SensorManager: " + data["event"]);
+			}
+		}
+		else {
+			console.log("Sensor Id not found! " + data["sensorId"]);
+		}
 	},
 
 	shutdown: function() {
@@ -95,7 +109,7 @@ SensorManagerInstance.prototype = {
 	},
 
 	start: function() {
-		topicClient.subscribe("sensor-manager", onEvent);
+		topicClient.subscribe("sensor-manager", this.onEvent);
 	}
 }
 

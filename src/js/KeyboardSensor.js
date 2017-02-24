@@ -8,6 +8,7 @@ KeyboardSensor.prototype = {
 	dataType: "TextData",
 	binaryType: "KeyboardData",
 	onStart: function() {
+		console.log("Keyboard Sensor has started!");
 		return true;
 	},
 
