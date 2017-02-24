@@ -1,5 +1,4 @@
 function GestureManagerInstance() {
-	console.log("GestureManager has been instantiated!!");
 }
 
 GestureManagerInstance.prototype = {

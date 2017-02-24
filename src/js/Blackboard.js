@@ -5,7 +5,6 @@ var Subscriber = function(callback, thing_event, path) {
 }
 
 function BlackboardInstance() {
-	console.log("Blackboard has been instantiated!!");
 }
 
 BlackboardInstance.prototype = {

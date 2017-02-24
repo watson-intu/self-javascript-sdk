@@ -44,7 +44,6 @@ AgentSocietyInstance.prototype = {
 
 	onEvent : function(msg) {
 		var payload = JSON.stringify(msg);
-		console.log("AgentSociety onEvent: " + payload);
 		var data = JSON.parse(msg["data"]);
 		console.log(data["agentId"]);
 		if(agentMap.get(data["agentId"]) != undefined) {
