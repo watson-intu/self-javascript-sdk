@@ -76,7 +76,7 @@ SensorManagerInstance.prototype = {
 			var sensor = sensorMap.value();
 			sensor.onStop();
 		}
-	}
+	},
 
 	onReconnect: function() {
 		for(var i = 0; i++ < sensorMap.size; sensorMap.next()) {

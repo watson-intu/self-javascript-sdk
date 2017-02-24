@@ -27,7 +27,7 @@ function TopicClientInstance() {
 	socket.onmessage = function(event) {
 		var response = JSON.parse(event.data);
 		console.log('Received a response from the server: ' + response);
-		if !('topic' in response) {
+		if (!response.hasOwnProperty('topic')) {
 			return;
 		}
 		if (subscriptionMap.get(response['topic']) != undefined) {
