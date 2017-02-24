@@ -1,18 +1,22 @@
 var SpeechGesture = function(gestureId, instanceId) {
 	this.gestureId = gestureId;
 	this.instanceId = instanceId;
+}
 
-	onStart = function() {
+SpeechGesture.prototype = {
+	constructor: SpeechGesture,
+
+	onStart : function() {
 		console.log("SpeechGesture OnStart Called!");
 		return true;
 	},
 
-	onStop = function() {
+	onStop : function() {
 		console.log("SpeechGesture OnStop Called!");
 		return true;
 	},
 
-	execute = function(params) {
+	execute : function(params) {
 		var text = params["text"];
 		var language = params["language"];
 		var gender = params["gender"];
@@ -22,7 +26,7 @@ var SpeechGesture = function(gestureId, instanceId) {
 		return true;
 	},
 
-	abort = function() {
+	abort : function() {
 		return true;
 	}
 }

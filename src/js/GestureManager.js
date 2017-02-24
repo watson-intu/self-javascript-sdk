@@ -6,15 +6,21 @@ GestureManagerInstance.prototype = {
 	constructor: GestureManagerInstance,
 
 	addGesture: function(gesture, override) {
-		var msg = {
-			"event" : "add_gesture_proxy",
-			"gestureId" : gesture.gestureId,
-			"instanceId" : gesture.instanceId,
-			"override" : override
-		};
-		TopicClient.getInstance().publish("gesture-manager", msg, false);
-		gestureMap.put(gesture.gestureId, gesture);
-		gestureOverrideMap.put(gesture.gestureId, override);
+		var g = gestureMap.get(gesture.gestureId);
+		if(g == undefined) {
+			if(gesture.onStart()) {
+				var msg = {
+					"event" : "add_gesture_proxy",
+					"gestureId" : gesture.gestureId,
+					"instanceId" : gesture.instanceId,
+					"override" : override
+				};
+				TopicClient.getInstance().publish("gesture-manager", msg, false);
+				gestureMap.put(gesture.gestureId, gesture);
+				gestureOverrideMap.put(gesture.gestureId, override);
+			}
+
+		}
 	},
 
 	removeGesture: function(gesture) {
@@ -66,7 +72,7 @@ GestureManagerInstance.prototype = {
 	},
 
 	start: function() {
-		TopicClient.getInstance().subscribe("gesture-manager", onEvent);
+		TopicClient.getInstance().subscribe("gesture-manager", this.onEvent);
 	}
 }
 

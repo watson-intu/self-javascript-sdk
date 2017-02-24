@@ -35,9 +35,9 @@
 		var gestureMap = new Map;
 		var gestureOverrideMap = new Map;
 		var topicClient = TopicClient.getInstance();
-		topicClient.send('Hello there');
-		topicClient.subscribe('log', sampleCallback);
-		topicClient.publish('log', {'key': 'value'}, true);
+		var speechGesture = new SpeechGesture("tts", GUID());
+		GestureManager.getInstance().start();
+		GestureManager.getInstance().addGesture(speechGesture, true);
 		//var keyboard = new KeyboardSensor();
 		//SensorManager.getInstance().addSensor(keyboard, true);
 		//SensorManager.getInstance().getSensors();
