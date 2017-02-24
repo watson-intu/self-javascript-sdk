@@ -74,9 +74,8 @@ Thing.prototype = {
 		this.parentId = value;
 	},
 
-	deserialize : function(payload) {
-		var json = JSON.parse(payload);
-		this.body = payload;
+	deserialize : function(json) {
+		this.body = json;
 		this.type = json["Type_"];
 		this.category = json["m_eCategory"];
 		this.guid = json["m_GUID"];

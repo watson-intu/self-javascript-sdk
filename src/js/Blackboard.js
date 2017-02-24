@@ -14,6 +14,50 @@ BlackboardInstance.prototype = {
 		var payload = JSON.stringify(msg);
 		var data = JSON.parse(msg["data"]);
 		console.log(data);
+		var thing = new Thing();
+		var thingEvent = new ThingEvent();
+		thingEvent.setThingEvent(ThingEventType.NONE);
+		thingEvent.setEventType(data);
+		if(data["event"] == "add_object") {
+			thingEvent.setEventType(ThingEventType.ADDED);
+			thingEvent.setThing(data["thing"]);
+			thing.deserialize(data["thing"]);
+			if(data.hasOwnProperty("parent")) {
+				thing.setParentId(data["parent"]);
+			}
+			thingEvent.setThing(thing);
+			thingMap.put(thing.getGUID(), thing);
+		}
+		else if(data["event"] == "remove_object") {
+			thingEvent.setEventType(ThingEventType.REMOVED);
+			if(thingMap.get(data["thing_guid"]) != undefined) {
+				thingMap.remove(data["thing_guid"]);
+			}
+		}
+		else if(data["event"] == "set_object_state") {
+			if(thingMap.get(data["thing_guid"]) != undefined) {
+				thingMap.get(data["thing_guid"]).setState(data["state"]);
+			}
+		}
+		else if(data["event"] == "set_object_importance") {
+			if(thingMap.get(data["thing_guid"]) != undefined) {
+				thingMap.get(data["thing_guid"]).setImportance(data["importance"]);
+			}
+		}
+
+		if(thingEvent.getEventType() != ThingEventType.NONE) {
+			for(var i = 0; i++ < blackboardMap.size; blackboardMap.next()) {
+				for(var j = 0; j++ < blackboardMap.value().size; blackboardMap.value().next()) {
+					if(data["type"] == blackboardMap.value().key()) {
+						for (var i = 0; i < blackboardMap.value().value().length; i++) {
+							if(thingEvent.getEventType() == blackboardMap.value().value()[i].thing_event) {
+								blackboardMap.value().value()[i].callback(data);
+							}
+						}
+					}
+				}
+			}
+		}
 	},
 
 	subscribeToType: function(thing, thing_event, path, callback) {
