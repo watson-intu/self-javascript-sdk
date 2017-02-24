@@ -26,7 +26,7 @@ AgentSocietyInstance.prototype = {
 				"name" : agent.agentName,
 				"override" : override
 			};
-			TopicClient.getInstance().publish("agent-society", msg, false);
+			topicClient.publish("agent-society", msg, false);
 			console.log("Adding Agent to Agent Society: " + agent.agentId);
 		}
 	},
@@ -38,7 +38,7 @@ AgentSocietyInstance.prototype = {
 				"event" : "remove_agent_proxy",
 				"agentId" : agent.agentId
 			};
-			TopicClient.getInstance().publish("agent-society", msg, false);
+			topicClient.publish("agent-society", msg, false);
 		}
 	},
 
@@ -62,7 +62,7 @@ AgentSocietyInstance.prototype = {
 	},
 
 	shutdown : function() {
-		TopicClient.getInstance().unsubscribe("agent-society");
+		topicClient.unsubscribe("agent-society");
 	},
 
 	onDisconnect : function() {
@@ -82,14 +82,13 @@ AgentSocietyInstance.prototype = {
 				"name" : agent.agentName,
 				"override" : override
 			};
-			TopicClient.getInstance().publish("agent-society", msg, false);
+			topicClient.publish("agent-society", msg, false);
 		}
 	},
 
 	start: function() {
-		TopicClient.getInstance().subscribe("agent-society", this.onEvent);
+		topicClient.subscribe("agent-society", this.onEvent);
 	}
-
 }
 
 var AgentSociety = (function () {

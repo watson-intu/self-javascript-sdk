@@ -14,7 +14,7 @@ GestureManagerInstance.prototype = {
 					"instanceId" : gesture.instanceId,
 					"override" : override
 				};
-				TopicClient.getInstance().publish("gesture-manager", msg, false);
+				topicClient.publish("gesture-manager", msg, false);
 				gestureMap.put(gesture.gestureId, gesture);
 				gestureOverrideMap.put(gesture.gestureId, override);
 			}
@@ -31,7 +31,7 @@ GestureManagerInstance.prototype = {
 				"gestureId" : gesture.gestureId,
 				"instanceId" : gesture.instanceId
 			};
-			TopicClient.getInstance().publish("gesture-manager", msg, false);
+			topicClient.publish("gesture-manager", msg, false);
 		}
 	},
 
@@ -46,28 +46,25 @@ GestureManagerInstance.prototype = {
 			else if(data["event"] == "abort_gesture") {
 				gestureMap.get(data["gestureId"]).abort();
 			}
-			else {
-				console.log("Could not interpet event for GestureManager: " + data["event"]);
-			}
 		}
 		else {
 			console.log("Gesture Id not found! " + data["gestureId"]);
 		}
 	},
 
-	onGestureDone: function(gesture, error) {
+	onGestureDone: function(gestureId, instanceId, error) {
 		var msg = {
 			"event" : "execute_done",
-			"gestureId" : gesture.gestureId,
-			"instanceId" : gesture.instanceId,
+			"gestureId" : gestureId,
+			"instanceId" : instanceId,
 			"error" : error
 		};
 
-		TopicClient.getInstance().publish("gesture-manager", msg, false);
+		topicClient.publish("gesture-manager", msg, false);
 	},
 
 	shutdown: function() {
-		TopicClient.getInstance().unsubscribe("gesture-manager");
+		topicClient.unsubscribe("gesture-manager");
 	},
 
 	onReconnect: function() {
@@ -81,12 +78,12 @@ GestureManagerInstance.prototype = {
 				"override" : override
 			};
 
-			TopicClient.getInstance().publish("gesture-manager", msg, false);
+			topicClient.publish("gesture-manager", msg, false);
 		}
 	},
 
 	start: function() {
-		TopicClient.getInstance().subscribe("gesture-manager", this.onEvent);
+		topicClient.subscribe("gesture-manager", this.onEvent);
 	}
 }
 

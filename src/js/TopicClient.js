@@ -3,7 +3,6 @@ port=9443;
 selfId='';
 token='';
 orgId='';
-isConnected=false;
 messages=[];
 
 function TopicClientInstance() {
@@ -28,8 +27,8 @@ function TopicClientInstance() {
 		if(messages.length > 0) {
 			for (var i = 0; i < messages.length; i++) {
 				socket.send(JSON.stringify(messages[i]));
+				
 			}
-			messages = [];
 		}
 		// TODO: Write reconnection functionality
 	}
@@ -59,8 +58,6 @@ function TopicClientInstance() {
 	this.getSocket = function() {
 		return socket;
 	}
-
-	console.log("TopicClient has been instantiated!!");
 }
 
 
@@ -72,10 +69,7 @@ TopicClientInstance.prototype = {
 		msg['origin'] = selfId + '/.';
 		var socket = this.getSocket();
 		if(isConnected) {
-			socket.onopen = function(data) {
-				socket.send(JSON.stringify(msg));
-				console.log('Sent message: ' + JSON.stringify(msg));
-			}
+			socket.send(JSON.stringify(msg));
 		}
 		else {
 			messages.push(msg);
@@ -85,7 +79,6 @@ TopicClientInstance.prototype = {
 	subscribe: function(path, callback) {
 		if (subscriptionMap.get(path) == undefined) {
 			subscriptionMap.put(path, callback);
-			console.log("TopicClient adding path: " + path);
 		}
 
 		data = {};
@@ -93,8 +86,6 @@ TopicClientInstance.prototype = {
 		data['targets'] = targets;
 		data['msg'] = 'subscribe';
 		this.sendMessage(data);
-
-		console.log("TopicClient subscription called!");
 	},
 
 	unsubscribe: function(path) {
@@ -139,6 +130,7 @@ var TopicClient = (function () {
 
 	function createInstance() {
 		var object = new TopicClientInstance();
+		console.log("Intantiating TopicClient!!");
 		return object;
 	}
 

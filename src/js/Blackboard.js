@@ -13,7 +13,6 @@ BlackboardInstance.prototype = {
 	onEvent: function(msg) {
 		var payload = JSON.stringify(msg);
 		var data = JSON.parse(msg["data"]);
-		console.log(data);
 		var thing = new Thing();
 		var thingEvent = new ThingEvent();
 		thingEvent.setThingEvent(ThingEventType.NONE);
@@ -63,8 +62,7 @@ BlackboardInstance.prototype = {
 	subscribeToType: function(thing, thing_event, path, callback) {
 		var p = blackboardMap.get(path);
 		if(p == undefined) {
-			TopicClient.getInstance().subscribe(path + "blackboard", this.onEvent);
-			console.log("Blackboard subscribing to path for first time: " + path); 
+			topicClient.subscribe(path + "blackboard", this.onEvent);
 			blackboardMap.put(path, new Map);
 		}
 
@@ -75,14 +73,12 @@ BlackboardInstance.prototype = {
 				"type" : thing,
 				"event_mask" : thing_event
 			};
-			TopicClient.getInstance().publish(path + "blackboard", msg, false);
-			console.log("Blackboard published following message: " + JSON.stringify(msg));
+			topicClient.publish(path + "blackboard", msg, false);
 			var list = [];
 			blackboardMap.get(path).put(thing, list);
 		}
 
 		blackboardMap.get(path).get(thing).push(new Subscriber(callback, thing_event, path));
-		console.log("Blackboard subscribeToType: " + thing);
 	},
 
 	unsubcribeToType: function(thing, callback, path) {
@@ -109,7 +105,7 @@ BlackboardInstance.prototype = {
 						"type" : thing
 					};
 
-					TopicClient.getInstance().publish(path + "blackboard", msg, false);
+					topicClient.publish(path + "blackboard", msg, false);
 				}
 			}
 		}
@@ -125,7 +121,7 @@ BlackboardInstance.prototype = {
 	// 		}
 	// 	};
 
-	// 	TopicClient.getInstance().publish(path + "blackboard", msg, false);
+	// 	topicClient.publish(path + "blackboard", msg, false);
 	// },
 
 	removeThing: function(thing, path) {
@@ -133,7 +129,7 @@ BlackboardInstance.prototype = {
 			"event" : "remove_object",
 			"thing_guid" : thing.guid
 		};
-		TopicClient.getInstance().publish(path + "blackboard", msg, false);
+		topicClient.publish(path + "blackboard", msg, false);
 	},
 
 	setState: function(thing, state, path) {
@@ -142,7 +138,7 @@ BlackboardInstance.prototype = {
 			"thing_guid" : thing.guid,
 			"state" : state
 		};
-		TopicClient.getInstance().publish(path + "blackboard", msg, false);
+		topicClient.publish(path + "blackboard", msg, false);
 	},
 
 	setImportance: function(thing, importance, path) {
@@ -151,7 +147,7 @@ BlackboardInstance.prototype = {
 			"thing_guid" : thing.guid,
 			"importance" : importance
 		};
-		TopicClient.getInstance().publish(path + "blackboard", msg, false);
+		topicClient.publish(path + "blackboard", msg, false);
 	}
 
 }
@@ -162,6 +158,7 @@ var Blackboard = (function () {
 
 	function createInstance() {
 		var object = new BlackboardInstance();
+		console.log("Instantiating Blackboard!");
 		return object;
 	}
 

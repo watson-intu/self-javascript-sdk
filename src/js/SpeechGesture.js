@@ -22,7 +22,7 @@ SpeechGesture.prototype = {
 		var gender = params["gender"];
 
 		console.log("SpeechGesture: " + text);
-
+		gestureManager.onGestureDone(this.gestureId, this.instanceId);
 		return true;
 	},
 

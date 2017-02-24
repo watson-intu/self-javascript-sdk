@@ -13,7 +13,7 @@ SensorManagerInstance.prototype = {
 			"binary_type" : sensor.binaryType,
 			"override" : override
 		};
-		TopicClient.getInstance().publish("sensor-manager", msg, false);
+		topicClient.publish("sensor-manager", msg, false);
 		sensorMap.put(sensor.sensorId, sensor);
 		sensorOverrideMap.put(sensor.sensorId, override);
 	},
@@ -28,7 +28,7 @@ SensorManagerInstance.prototype = {
 
 	sendData: function(sensor, data) {
 		if(isRegistered(sensor)) {
-			TopicClient.getInstance().publish("sensor-proxy-" + sensor.sensorId, data, false);
+			topicClient.publish("sensor-proxy-" + sensor.sensorId, data, false);
 		}
 	},
 
@@ -40,7 +40,7 @@ SensorManagerInstance.prototype = {
 				"event" : "remove_sensor_proxy",
 				"sensorId" : sensor.sensorId
 			};
-			TopicClient.getInstance().publish("sensor-manager", msg, false);
+			topicClient.publish("sensor-manager", msg, false);
 		}
 	},
 
@@ -67,7 +67,7 @@ SensorManagerInstance.prototype = {
 	},
 
 	shutdown: function() {
-		TopicClient.getInstance().unsubscribe("sensor-manager");
+		topicClient.unsubscribe("sensor-manager");
 	},
 
 	onDisconnect : function() {
@@ -90,12 +90,12 @@ SensorManagerInstance.prototype = {
 				"override" : override
 			};
 
-			TopicClient.getInstance().publish("sensor-manager", msg, false);
+			topicClient.publish("sensor-manager", msg, false);
 		}
 	},
 
 	start: function() {
-		TopicClient.getInstance().subscribe("sensor-manager", onEvent);
+		topicClient.subscribe("sensor-manager", onEvent);
 	}
 }
 
