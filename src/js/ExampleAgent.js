@@ -12,7 +12,7 @@ ExampleAgent.prototype = {
 
 	onStart : function() {
 		console.log("ExampleAgent OnStart Called!");
-		Blackboard.getInstance().subscribeToType("Text", ThingEventType.ADDED, "", onText);
+		Blackboard.getInstance().subscribeToType("Text", ThingEventType.ADDED, "", this.onText);
 		return true;
 	},
 

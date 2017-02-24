@@ -37,8 +37,23 @@ GestureManagerInstance.prototype = {
 	},
 
 	onEvent: function(msg) {
-		console.log("onEvent hit in GestureManager!");
-		console.log(msg);
+		var payload = JSON.stringify(msg);
+		var data = JSON.parse(msg["data"]);
+		if(gestureMap.get(data["gestureId"]) != undefined) {
+			if(data["event"] == "execute_gesture") {
+				var params = data["params"];
+				gestureMap.get(data["gestureId"]).execute(params);
+			}
+			else if(data["event"] == "abort_gesture") {
+				gestureMap.get(data["gestureId"]).abort();
+			}
+			else {
+				console.log("Could not interpet event for GestureManager: " + data["event"]);
+			}
+		}
+		else {
+			console.log("Gesture Id not found! " + data["gestureId"]);
+		}
 	},
 
 	onGestureDone: function(gesture, error) {

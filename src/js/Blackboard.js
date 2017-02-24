@@ -18,7 +18,8 @@ BlackboardInstance.prototype = {
 	subscribeToType: function(thing, thing_event, path, callback) {
 		var p = blackboardMap.get(path);
 		if(p == undefined) {
-			TopicClient.getInstance().subscribe(path + "blackboard", onEvent);
+			TopicClient.getInstance().subscribe(path + "blackboard", this.onEvent);
+			console.log("Blackboard subscribing to path for first time: " + path); 
 			blackboardMap.put(path, new Map);
 		}
 
@@ -30,11 +31,13 @@ BlackboardInstance.prototype = {
 				"event_mask" : thing_event
 			};
 			TopicClient.getInstance().publish(path + "blackboard", msg, false);
+			console.log("Blackboard published following message: " + JSON.stringify(msg));
 			var list = [];
 			blackboardMap.get(path).put(thing, list);
 		}
 
 		blackboardMap.get(path).get(thing).push(new Subscriber(callback, thing_event, path));
+		console.log("Blackboard subscribeToType: " + thing);
 	},
 
 	unsubcribeToType: function(thing, callback, path) {
