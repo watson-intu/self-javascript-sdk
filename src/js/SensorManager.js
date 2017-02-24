@@ -71,6 +71,13 @@ SensorManagerInstance.prototype = {
 		TopicClient.getInstance().unsubscribe("sensor-manager");
 	},
 
+	onDisconnect : function() {
+		for(var i = 0; i++ < sensorMap.size; sensorMap.next()) {
+			var sensor = sensorMap.value();
+			sensor.onStop();
+		}
+	}
+
 	onReconnect: function() {
 		for(var i = 0; i++ < sensorMap.size; sensorMap.next()) {
 			var sensor = sensorMap.value();
