@@ -3,11 +3,14 @@ port=9443;
 selfId='';
 token='';
 orgId='';
+isConnected=false;
+messages=[];
 
 function TopicClientInstance() {
 	// Private variables
 	// TODO: The path to the WebSocket server could be an argument
 	var socket = new WebSocket('ws://' + host + ':' + port + '/stream?selfId=' + selfId + '&orgId=' + orgId + '&token=' + token);
+
 
 	socket.onopen = function(event) {
 		console.log('Performing WebSocket handshake');
@@ -19,19 +22,25 @@ function TopicClientInstance() {
 		};
 
 		socket.send(JSON.stringify(msg));
+		isConnected = true;
 		console.log('Handshake complete, readyState = ' + socket.readyState);
 		console.log('Handshake complete, protocol selected by the server = ' + socket.protocol);
+		if(messages.length > 0) {
+			for (var i = 0; i < messages.length; i++) {
+				socket.send(JSON.stringify(messages[i]));
+			}
+			messages = [];
+		}
 		// TODO: Write reconnection functionality
 	}
 
 	socket.onmessage = function(event) {
 		var response = JSON.parse(event.data);
-		console.log('Received a response from the server: ' + response);
 		if (!response.hasOwnProperty('topic')) {
 			return;
 		}
 		if (subscriptionMap.get(response['topic']) != undefined) {
-			subscriptionMap.get(response['topic']);
+			subscriptionMap.get(response['topic'])(response);
 		}
 	}
 
@@ -42,6 +51,7 @@ function TopicClientInstance() {
 	socket.onclose = function(event) {
 		console.log('Closing the connection: ' + JSON.parse(event.data));
 		socket.close();
+		isConnected = false;
 	}
 
 	// Public accessors
@@ -57,20 +67,32 @@ function TopicClientInstance() {
 TopicClientInstance.prototype = {
 	constructor: TopicClientInstance,
 
+
+	sendMessage: function(msg) {
+		msg['origin'] = selfId + '/.';
+		var socket = this.getSocket();
+		if(isConnected) {
+			socket.onopen = function(data) {
+				socket.send(JSON.stringify(msg));
+				console.log('Sent message: ' + JSON.stringify(msg));
+			}
+		}
+		else {
+			messages.push(msg);
+		}
+	},
+
 	subscribe: function(path, callback) {
 		if (subscriptionMap.get(path) == undefined) {
 			subscriptionMap.put(path, callback);
+			console.log("TopicClient adding path: " + path);
 		}
 
 		data = {};
 		targets = [path];
 		data['targets'] = targets;
 		data['msg'] = 'subscribe';
-		var socket = this.getSocket();
-		socket.onopen = function(event) {
-			socket.send(JSON.stringify(data));
-			console.log('Subscribing: ' + JSON.stringify(data));
-		}
+		this.sendMessage(data);
 
 		console.log("TopicClient subscription called!");
 	},
@@ -82,20 +104,12 @@ TopicClientInstance.prototype = {
 			targets = [path];
 			data['targets'] = targets;
 			data['msg'] = 'unsubscribe';
-			var socket = this.getSocket();
-			socket.onopen = function(event) {
-				socket.send(JSON.stringify(data));
-				console.log('Subscribing: ' + JSON.stringify(data));
-			}
-			return true;
+			this.sendMessage(data);
 			console.log("Unsubscribing: " + path);
 		}
-
-		return false;
 	},
 
 	publish: function(path, msg, persisted) {
-		console.log("TopicClient publishing data!");
 		data = {};
 		targets = [path];
 		data['targets'] = targets;
@@ -103,12 +117,8 @@ TopicClientInstance.prototype = {
 		data['data'] = JSON.stringify(msg);
 		data['binary'] = false;
 		data['persisted'] = persisted;
-		console.log(data);
-		var socket = this.getSocket();
-		socket.onopen = function(event) {
-			socket.send(JSON.stringify(data));
-			console.log('Published data: ' + JSON.stringify(data));
-		}
+		this.sendMessage(data);
+
 	},
 
 	publishBinary: function(path, msg, persisted) {
@@ -117,16 +127,6 @@ TopicClientInstance.prototype = {
 
 	onPong: function(buffer) {
 		console.log("TopicClient onPong called");
-	},
-
-	send: function(msg) {
-		console.log('Sending message: ' + msg);
-		msg['origin'] = selfId + '/.';
-		var socket = this.getSocket();
-		socket.onopen = function(msg) {
-			socket.send(JSON.stringify(msg));
-			console.log('Sent message: ' + msg);
-		}
 	},
 
 	sendBinary: function(payload) {

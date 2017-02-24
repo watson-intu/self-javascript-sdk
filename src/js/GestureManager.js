@@ -1,20 +1,25 @@
 function GestureManagerInstance() {
-	console.log("GestureManager has been instantiated!!");
 }
 
 GestureManagerInstance.prototype = {
 	constructor: GestureManagerInstance,
 
 	addGesture: function(gesture, override) {
-		var msg = {
-			"event" : "add_gesture_proxy",
-			"gestureId" : gesture.gestureId,
-			"instanceId" : gesture.instanceId,
-			"override" : override
-		};
-		TopicClient.getInstance().publish("gesture-manager", msg, false);
-		gestureMap.put(gesture.gestureId, gesture);
-		gestureOverrideMap.put(gesture.gestureId, override);
+		var g = gestureMap.get(gesture.gestureId);
+		if(g == undefined) {
+			if(gesture.onStart()) {
+				var msg = {
+					"event" : "add_gesture_proxy",
+					"gestureId" : gesture.gestureId,
+					"instanceId" : gesture.instanceId,
+					"override" : override
+				};
+				TopicClient.getInstance().publish("gesture-manager", msg, false);
+				gestureMap.put(gesture.gestureId, gesture);
+				gestureOverrideMap.put(gesture.gestureId, override);
+			}
+
+		}
 	},
 
 	removeGesture: function(gesture) {
@@ -31,8 +36,23 @@ GestureManagerInstance.prototype = {
 	},
 
 	onEvent: function(msg) {
-		console.log("onEvent hit in GestureManager!");
-		console.log(msg);
+		var payload = JSON.stringify(msg);
+		var data = JSON.parse(msg["data"]);
+		if(gestureMap.get(data["gestureId"]) != undefined) {
+			if(data["event"] == "execute_gesture") {
+				var params = data["params"];
+				gestureMap.get(data["gestureId"]).execute(params);
+			}
+			else if(data["event"] == "abort_gesture") {
+				gestureMap.get(data["gestureId"]).abort();
+			}
+			else {
+				console.log("Could not interpet event for GestureManager: " + data["event"]);
+			}
+		}
+		else {
+			console.log("Gesture Id not found! " + data["gestureId"]);
+		}
 	},
 
 	onGestureDone: function(gesture, error) {
@@ -66,7 +86,7 @@ GestureManagerInstance.prototype = {
 	},
 
 	start: function() {
-		TopicClient.getInstance().subscribe("gesture-manager", onEvent);
+		TopicClient.getInstance().subscribe("gesture-manager", this.onEvent);
 	}
 }
 

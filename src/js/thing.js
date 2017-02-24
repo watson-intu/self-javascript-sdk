@@ -22,18 +22,23 @@ function GUID() {
 	return guid;
 }
 
-var Thing = {
-	thingType : "IThing",
-	category : ThingCategory.PERCEPTION,
-	guid : new GUID(),
-	importance : 1.0,
-	state : "ADDED", 
-	create_time : new Date().getTime() / 1000,
-	life_span : 3600.0,
-	body : {},
-	data_type : "",
-	data : {},
-	parentId : "",
+var Thing = function() {
+	this.thingType = "IThing";
+	this.category = ThingCategory.PERCEPTION;
+	this.guid = GUID();
+	this.importance = 1.0;
+	this.state = "ADDED";
+	this.create_time = new Date().getTime() / 1000;
+	this.life_span = 3600.0;
+	this.body = {};
+	this.data_type = "";
+	this.data = {};
+	this.parentId = "";
+}
+
+Thing.prototype = {
+
+	constructor: Thing,
 
 	setThingType : function(value) {
 		this.thingType = value;
@@ -69,9 +74,8 @@ var Thing = {
 		this.parentId = value;
 	},
 
-	deserialize : function(payload) {
-		var json = JSON.parse(payload);
-		this.body = payload;
+	deserialize : function(json) {
+		this.body = json;
 		this.type = json["Type_"];
 		this.category = json["m_eCategory"];
 		this.guid = json["m_GUID"];
@@ -93,41 +97,41 @@ var Thing = {
 		}
 	},
 
-	"getThingType" : function() {
+	getThingType : function() {
 		return this.thingType;
 	},
-	"getCategory" : function() {
+	getCategory : function() {
 		return this.category;
 	},
-	"getGUID" : function() {
+	getGUID : function() {
 		return this.guid;
 	},
-	"getImportance" : function() {
+	getImportance : function() {
 		return this.importance;
 	},
-	"getState" : function() {
+	getState : function() {
 		return this.state;
 	},
-	"getCreateTime" : function() {
+	getCreateTime : function() {
 		return this.create_time;
 	},
-	"getLifeSpan" : function() {
+	getLifeSpan : function() {
 		return this.life_span;
 	},
-	"getBody" : function() {
+	getBody : function() {
 		return this.body;
 	},
-	"getDataType" : function() {
+	getDataType : function() {
 		return this.data_type;
 	},
-	"getData" : function() {
+	getData : function() {
 		return this.data;
 	},
-	"getParentId" : function() {
+	getParentId : function() {
 		return this.parentId;
 	},
 
-	"serialize" : function() {
+	serialize : function() {
 
 		var msg = {};
 
@@ -150,4 +154,35 @@ var Thing = {
 
 		return msg;
 	}
+}
+
+var ThingEvent = function() {
+	this.thingEvent = "";
+	this.eventType = "";
+	this.thing = "";
+}
+
+ThingEvent.prototype = {
+	constructor: ThingEvent,
+
+	getEventType : function() {
+		return this.eventType;
+	},
+	getThingEvent : function() {
+		return this.thingEvent;
+	},
+	getThing : function() {
+		return this.thing;
+	},
+
+	setEventType : function(value) {
+		this.eventType = value;
+	},
+	setThingEvent : function(value) {
+		this.thingEvent = value;
+	},
+	setThing : function(value) {
+		this.thing = value;
+	}
+
 }

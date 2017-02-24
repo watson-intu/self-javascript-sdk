@@ -1,5 +1,4 @@
 function SensorManagerInstance() {
-	console.log("SensorManager has been instantiated!!");
 }
 
 SensorManagerInstance.prototype = {

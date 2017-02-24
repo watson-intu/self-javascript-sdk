@@ -5,20 +5,66 @@ var Subscriber = function(callback, thing_event, path) {
 }
 
 function BlackboardInstance() {
-	console.log("Blackboard has been instantiated!!");
 }
 
 BlackboardInstance.prototype = {
 	constructor: BlackboardInstance,
 
-	onEvent: function(data) {
-		console.log("Blackboard received data: " + data);
+	onEvent: function(msg) {
+		var payload = JSON.stringify(msg);
+		var data = JSON.parse(msg["data"]);
+		console.log(data);
+		var thing = new Thing();
+		var thingEvent = new ThingEvent();
+		thingEvent.setThingEvent(ThingEventType.NONE);
+		thingEvent.setEventType(data);
+		if(data["event"] == "add_object") {
+			thingEvent.setEventType(ThingEventType.ADDED);
+			thingEvent.setThing(data["thing"]);
+			thing.deserialize(data["thing"]);
+			if(data.hasOwnProperty("parent")) {
+				thing.setParentId(data["parent"]);
+			}
+			thingEvent.setThing(thing);
+			thingMap.put(thing.getGUID(), thing);
+		}
+		else if(data["event"] == "remove_object") {
+			thingEvent.setEventType(ThingEventType.REMOVED);
+			if(thingMap.get(data["thing_guid"]) != undefined) {
+				thingMap.remove(data["thing_guid"]);
+			}
+		}
+		else if(data["event"] == "set_object_state") {
+			if(thingMap.get(data["thing_guid"]) != undefined) {
+				thingMap.get(data["thing_guid"]).setState(data["state"]);
+			}
+		}
+		else if(data["event"] == "set_object_importance") {
+			if(thingMap.get(data["thing_guid"]) != undefined) {
+				thingMap.get(data["thing_guid"]).setImportance(data["importance"]);
+			}
+		}
+
+		if(thingEvent.getEventType() != ThingEventType.NONE) {
+			for(var i = 0; i++ < blackboardMap.size; blackboardMap.next()) {
+				for(var j = 0; j++ < blackboardMap.value().size; blackboardMap.value().next()) {
+					if(data["type"] == blackboardMap.value().key()) {
+						for (var i = 0; i < blackboardMap.value().value().length; i++) {
+							if(thingEvent.getEventType() == blackboardMap.value().value()[i].thing_event) {
+								blackboardMap.value().value()[i].callback(data);
+							}
+						}
+					}
+				}
+			}
+		}
 	},
 
 	subscribeToType: function(thing, thing_event, path, callback) {
 		var p = blackboardMap.get(path);
 		if(p == undefined) {
-			TopicClient.getInstance().subscribe(path + "blackboard", onEvent);
+			TopicClient.getInstance().subscribe(path + "blackboard", this.onEvent);
+			console.log("Blackboard subscribing to path for first time: " + path); 
 			blackboardMap.put(path, new Map);
 		}
 
@@ -30,11 +76,13 @@ BlackboardInstance.prototype = {
 				"event_mask" : thing_event
 			};
 			TopicClient.getInstance().publish(path + "blackboard", msg, false);
+			console.log("Blackboard published following message: " + JSON.stringify(msg));
 			var list = [];
 			blackboardMap.get(path).put(thing, list);
 		}
 
 		blackboardMap.get(path).get(thing).push(new Subscriber(callback, thing_event, path));
+		console.log("Blackboard subscribeToType: " + thing);
 	},
 
 	unsubcribeToType: function(thing, callback, path) {

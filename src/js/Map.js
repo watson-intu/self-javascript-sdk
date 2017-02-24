@@ -4,7 +4,6 @@
 function Map(linkItems) {
     this.current = undefined;
     this.size = 0;
-    console.log("Map hit!");
     if(linkItems === false)
         this.disableLinking();
 }
