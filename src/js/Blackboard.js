@@ -10,8 +10,10 @@ function BlackboardInstance() {
 BlackboardInstance.prototype = {
 	constructor: BlackboardInstance,
 
-	onEvent: function(data) {
-		console.log("Blackboard received data: " + data);
+	onEvent: function(msg) {
+		var payload = JSON.stringify(msg);
+		var data = JSON.parse(msg["data"]);
+		console.log(data);
 	},
 
 	subscribeToType: function(thing, thing_event, path, callback) {

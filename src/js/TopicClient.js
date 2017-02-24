@@ -29,13 +29,13 @@ function TopicClientInstance() {
 			for (var i = 0; i < messages.length; i++) {
 				socket.send(JSON.stringify(messages[i]));
 			}
+			messages = [];
 		}
 		// TODO: Write reconnection functionality
 	}
 
 	socket.onmessage = function(event) {
 		var response = JSON.parse(event.data);
-		console.log('Received a response from the server: ' + event.data);
 		if (!response.hasOwnProperty('topic')) {
 			return;
 		}
