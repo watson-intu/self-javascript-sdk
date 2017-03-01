@@ -22,5 +22,9 @@ KeyboardSensor.prototype = {
 
 	onResume: function() {
 		return true;
+	},
+
+	sendData: function(value) {
+		topicClient.publish("conversation", value, false);
 	}
 }

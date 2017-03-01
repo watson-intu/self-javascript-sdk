@@ -22,6 +22,7 @@ SpeechGesture.prototype = {
 		var gender = params["gender"];
 
 		console.log("SpeechGesture: " + text);
+		addChatText("Watson", text);
 		gestureManager.onGestureDone(this.gestureId, this.instanceId);
 		return true;
 	},

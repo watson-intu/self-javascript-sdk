@@ -7,7 +7,8 @@ ExampleAgent.prototype = {
 	constructor: ExampleAgent,
 
 	onText : function(payload) {
-		console.log("ExampleAgent OnText: " + payload["thing"]["m_Text"]);
+		addChatText("John", payload["thing"]["m_Text"]);
+
 	},
 
 	onStart : function() {
