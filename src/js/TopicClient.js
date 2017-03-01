@@ -44,11 +44,11 @@ function TopicClientInstance() {
 	}
 
 	socket.onerror = function(event) {
-		console.log('An error occurred: ' + JSON.parse(event.data));
+		console.log('An error occurred: ' + event.data);
 	}
 
 	socket.onclose = function(event) {
-		console.log('Closing the connection: ' + JSON.parse(event.data));
+		console.log('Closing the connection: ' + event.data);
 		socket.close();
 		isConnected = false;
 	}
