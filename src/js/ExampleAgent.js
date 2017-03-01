@@ -7,7 +7,11 @@ ExampleAgent.prototype = {
 	constructor: ExampleAgent,
 
 	onText : function(payload) {
-		addChatText("John", payload["thing"]["m_Text"]);
+		var text = payload["thing"]["m_Text"];
+		if(text[0] == '"' && text[text.length - 1] == '"') {
+			text = text.substring(1, text.length-1);
+		}
+		addChatText("John", text);
 
 	},
 

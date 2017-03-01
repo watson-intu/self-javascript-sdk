@@ -1,11 +1,9 @@
-host='127.0.0.1';
-port=9443;
 selfId='';
 token='';
 orgId='';
 messages=[];
 
-function TopicClientInstance() {
+function TopicClientInstance(host, port) {
 	// Private variables
 	// TODO: The path to the WebSocket server could be an argument
 	var socket = new WebSocket('ws://' + host + ':' + port + '/stream?selfId=' + selfId + '&orgId=' + orgId + '&token=' + token);
@@ -128,8 +126,8 @@ TopicClientInstance.prototype = {
 var TopicClient = (function () {
 	var instance;
 
-	function createInstance() {
-		var object = new TopicClientInstance();
+	function createInstance(host, port) {
+		var object = new TopicClientInstance(host, port);
 		console.log("Intantiating TopicClient!!");
 		return object;
 	}
@@ -137,7 +135,7 @@ var TopicClient = (function () {
 	return {
 		getInstance: function() {
 			if(!instance) {
-				instance = createInstance();
+				instance = createInstance('127.0.0.1', 9443);
 			}
 
 			return instance;

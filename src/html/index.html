@@ -15,10 +15,16 @@
 		<script src="../js/ExampleAgent.js" type="text/javascript"></script> 
 		<script type="text/javascript">
 
+			function addTopicInstance() {
+				var checkObj = document.getElementById('dominos').checked;
+				if(checkObj) {
+					var newTopicClient = TopicClient.createInstance();
+				}
+			}
+
 			function sendText() {
 				var textObj = document.getElementById('usermsg');
 				if(textObj.value != '') {
-					addChatText("John", textObj.value);
 					keyboard.sendData(textObj.value);
 					textObj.value = '';
 				}
@@ -83,5 +89,7 @@
 			<input name="usermsg" type="text" id ="usermsg" size="63" />
 			<button onclick='sendText()'>Send</button>
 		</div>
+		<input type="checkbox" name="dominos" id="dominos" value="Dominos Pizza">Dominos Pizza&nbsp&nbsp</input>
+		<button onClick='addTopicInstance()'>Add</button>
 	</body>
 </html>
