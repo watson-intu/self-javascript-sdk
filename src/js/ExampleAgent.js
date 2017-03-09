@@ -11,7 +11,9 @@ ExampleAgent.prototype = {
 		if(text[0] == '"' && text[text.length - 1] == '"') {
 			text = text.substring(1, text.length-1);
 		}
-		addChatText("John", text);
+		var data = {'input': {'text': text}};
+		Api.setUserPayload(data);
+//		addChatText("John", text);
 
 	},
 

@@ -21,7 +21,10 @@ SpeechGesture.prototype = {
 		var language = params["language"];
 		var gender = params["gender"];
 
-		addChatText("Watson", text);
+//		addChatText("Watson", text);
+		console.log("SpeechGesture: " + text);
+		var data = {'output': {'text': text}};
+		Api.setWatsonPayload(data);
 		gestureManager.onGestureDone(this.gestureId, this.instanceId);
 		return true;
 	},
