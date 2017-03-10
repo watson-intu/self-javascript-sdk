@@ -31,6 +31,7 @@
     <script src="../js/SpeechGesture.js" type="text/javascript"></script>
     <script src="../js/AgentSociety.js" type="text/javascript"></script>
     <script src="../js/ExampleAgent.js" type="text/javascript"></script> 
+    <script src="../js/SpeechAgent.js" type="text/javascript"></script>
 
     <link rel="stylesheet" href="css/main.min.css">
 
@@ -214,11 +215,13 @@
       var sensorManager = SensorManager.getInstance();
       var speechGesture = new SpeechGesture("tts", GUID());
       var exampleAgent = new ExampleAgent("ExampleAgent", GUID());
+      var speechAgent = new SpeechAgent("SpeechAgent", GUID());
       var keyboard = new KeyboardSensor();
       agentSociety.start();
       agentSociety.addAgent(exampleAgent, false);
-      gestureManager.start();
-      gestureManager.addGesture(speechGesture, true); 
+      agentSociety.addAgent(speechAgent, false);
+//      gestureManager.start();
+ //     gestureManager.addGesture(speechGesture, true); 
       sensorManager.start();  
       sensorManager.addSensor(keyboard, true);
     </script> 
