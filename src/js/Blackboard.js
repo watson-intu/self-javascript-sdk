@@ -50,7 +50,7 @@ BlackboardInstance.prototype = {
 					if(data["type"] == blackboardMap.value().key()) {
 						for (var i = 0; i < blackboardMap.value().value().length; i++) {
 							if(thingEvent.getEventType() == blackboardMap.value().value()[i].thing_event) {
-								blackboardMap.value().value()[i].callback(data);
+								blackboardMap.value().value()[i].callback(data["thing"]);
 							}
 						}
 					}

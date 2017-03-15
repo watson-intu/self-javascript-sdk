@@ -7,7 +7,7 @@ ExampleAgent.prototype = {
 	constructor: ExampleAgent,
 
 	onText : function(payload) {
-		var text = payload["thing"]["m_Text"];
+		var text = payload["m_Text"];
 		if(text[0] == '"' && text[text.length - 1] == '"') {
 			text = text.substring(1, text.length-1);
 		}
