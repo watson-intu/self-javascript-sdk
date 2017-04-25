@@ -33,6 +33,8 @@
     <script src="../js/AgentSociety.js" type="text/javascript"></script>
     <script src="../js/ExampleAgent.js" type="text/javascript"></script> 
     <script src="../js/SpeechAgent.js" type="text/javascript"></script>
+    <script src="../js/ClassifierManager.js" type="text/javascript"></script>
+    <script src="../js/ExampleClassifier.js" type="text/javascript"></script>
 
     <link rel="stylesheet" href="css/main.min.css">
 
@@ -202,6 +204,8 @@
       var subscriptionMap = new Map;
       var agentMap = new Map;
       var agentOverrideMap = new Map;
+      var classifierMap = new Map;
+      var classifierOverrideMap = new Map;
       var thingMap = new Map;
 
       var isConnected = false;
@@ -214,14 +218,18 @@
       var gestureManager = GestureManager.getInstance();
       var agentSociety = AgentSociety.getInstance();
       var sensorManager = SensorManager.getInstance();
+      var classifierManager = ClassifierManager.getInstance();
       var speechGesture = new SpeechGesture("tts", GUID());
       var exampleAgent = new ExampleAgent("ExampleAgent", GUID());
       var speechAgent = new SpeechAgent("SpeechAgent", GUID());
       var keyboard = new KeyboardSensor();
       var microphone = new MicrophoneSensor();
+      var exampleClassifier = new ExampleClassifier("ExampleClassifier", GUID());
       agentSociety.start();
       agentSociety.addAgent(exampleAgent, false);
       agentSociety.addAgent(speechAgent, false);
+      classifierManager.start();
+      classifierManager.addClassifier(exampleClassifier, false);
 //      gestureManager.start();
  //     gestureManager.addGesture(speechGesture, true); 
       sensorManager.start();  
