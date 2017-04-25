@@ -35,6 +35,8 @@
     <script src="../js/SpeechAgent.js" type="text/javascript"></script>
     <script src="../js/ClassifierManager.js" type="text/javascript"></script>
     <script src="../js/ExampleClassifier.js" type="text/javascript"></script>
+    <script src="../js/FeatureExtractor.js" type="text/javascript"></script>
+    <script src="../js/ExampleExtractor.js" type="text/javascript"></script>
 
     <link rel="stylesheet" href="css/main.min.css">
 
@@ -206,6 +208,8 @@
       var agentOverrideMap = new Map;
       var classifierMap = new Map;
       var classifierOverrideMap = new Map;
+      var extractorMap = new Map;
+      var extractorOverrideMap = new Map;
       var thingMap = new Map;
 
       var isConnected = false;
@@ -219,12 +223,14 @@
       var agentSociety = AgentSociety.getInstance();
       var sensorManager = SensorManager.getInstance();
       var classifierManager = ClassifierManager.getInstance();
+      var featureExtractor = FeatureExtractor.getInstance();
       var speechGesture = new SpeechGesture("tts", GUID());
       var exampleAgent = new ExampleAgent("ExampleAgent", GUID());
       var speechAgent = new SpeechAgent("SpeechAgent", GUID());
       var keyboard = new KeyboardSensor();
       var microphone = new MicrophoneSensor();
       var exampleClassifier = new ExampleClassifier("ExampleClassifier", GUID());
+      var exampleExtractor = new ExampleExtractor("ExampleExtractor", GUID());
       agentSociety.start();
       agentSociety.addAgent(exampleAgent, false);
       agentSociety.addAgent(speechAgent, false);
@@ -235,6 +241,9 @@
       sensorManager.start();  
       sensorManager.addSensor(keyboard, true);
       sensorManager.addSensor(microphone, true);
+      featureExtractor.start();
+      featureExtractor.addExtractor(exampleExtractor, false);
+
     </script> 
     <script src="vendor.min.js"></script>
     <script src="howler.min.js"></script>

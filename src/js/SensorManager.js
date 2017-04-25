@@ -30,6 +30,12 @@ SensorManagerInstance.prototype = {
 		if(isRegistered(sensor)) {
 			topicClient.publish("sensor-proxy-" + sensor.sensorId, data, false);
 		}
+		for(var i = 0; i++ < extractorMap.size; extractorMap.next()) {
+			var extractor = extractorMap.value();
+			if(sensor.dataType = extractor.dataType) {
+				extractor.callback(data);
+			}
+		}
 	},
 
 	removeSensor: function(sensor) {
@@ -53,6 +59,25 @@ SensorManagerInstance.prototype = {
 		}
 
 		return undefined;
+	},
+
+	registerForSensor: function(extractorId, callback) {
+		if(extractorMap.get(extractorId) != undefined) {
+			if(this.findSensor(extractorMap.get(extractorId).dataType) != undefined) {
+				extractorMap.get(extractorId).callback = callback;
+				console.log("Got callback for extractor!");
+			}
+		}
+		else {
+			console.log("Could not get callback!!");
+		}
+
+	},
+
+	unregisterForSensor: function(extractorId) {
+		if(extractorMap.get(extractorId) != undefined) {
+			extractorMap.remove(extractorId);
+		}
 	},
 
 	getSensors: function() {
