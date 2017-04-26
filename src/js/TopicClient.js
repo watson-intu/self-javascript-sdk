@@ -93,6 +93,27 @@ TopicClientInstance.prototype = {
 		}
 	},
 
+	sendBinary: function(msg, data) {
+		msg['data'] = data.length;
+		msg['origin'] = selfId + '/.';
+		console.log(msg);
+		header = JSON.stringify(msg) + '\0';
+		var utf8 = unescape(encodeURIComponent(header));
+		var arr = [];
+		for (var i = 0; i < utf8.length; i++) {
+		    arr.push(utf8.charCodeAt(i));
+		}
+		var dataAs16Bit = new Int16Array(data.getChannelData(0).buffer)
+		console.log(dataAs16Bit);
+		for (var j = 0; j < dataAs16Bit.length; j++) {
+			arr.push(dataAs16Bit[i]);
+		}
+		var socket = this.getSocket();
+		if(isConnected) {
+			socket.send(arr)
+		}
+	},
+
 	subscribe: function(path, callback) {
 		if (subscriptionMap.get(path) == undefined) {
 			subscriptionMap.put(path, callback);
@@ -130,15 +151,17 @@ TopicClientInstance.prototype = {
 	},
 
 	publishBinary: function(path, msg, persisted) {
-
+		data = {};
+		targets = [path];
+		data['targets'] = targets;
+		data['msg'] = 'publish_at';
+		data['binary'] = true;
+		data['persisted'] = persisted;
+		this.sendBinary(data, msg);
 	},
 
 	onPong: function(buffer) {
 		console.log("TopicClient onPong called");
-	},
-
-	sendBinary: function(payload) {
-
 	},
 }
 

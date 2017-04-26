@@ -17,7 +17,10 @@
 
 function MicrophoneSensor() {
 	console.log("microphone sensor instantiated!");
+
 }
+
+var micPaused = true;
 
 /**
 *  This is an example of how to implement your own Microphone sensor.
@@ -34,6 +37,25 @@ MicrophoneSensor.prototype = {
 	*/
 	onStart: function() {
 		console.log("Microphone Sensor has started!");
+		console.log(this, "Microphone object");
+		var micSensor = this;
+		var streamAudio = function(stream) {
+	    	var context = new AudioContext();
+	    	var input = context.createMediaStreamSource(stream)
+	    	var processor = context.createScriptProcessor(1024,1,1);
+
+	    	processor.connect(context.destination);
+
+	    	processor.onaudioprocess = function(e){
+	      		if(!micPaused) {
+	      			console.log(e.inputBuffer.getChannelData(0)[0]);
+	      			sensorManager.sendData(micSensor, e.inputBuffer);
+	      		}
+	    	};
+  		};
+
+  		navigator.mediaDevices.getUserMedia({ audio: true, video: false })
+      		.then(streamAudio);
 		return true;
 	},
 
@@ -48,6 +70,8 @@ MicrophoneSensor.prototype = {
 	*  Pause the sensor
 	*/
 	onPause: function() {
+		console.log("Pausing microphone!");
+		micPaused = true;
 		return true;
 	},
 
@@ -55,13 +79,8 @@ MicrophoneSensor.prototype = {
 	*  Resume the sensor
 	*/
 	onResume: function() {
+		console.log("Resuming microphone");
+		micPaused = false;
 		return true;
 	},
-
-	/**
-	*  Send data feature extractors
-	*/
-	sendData: function(value) {
-//		topicClient.publish("conversation", value, false);
-	}
 }

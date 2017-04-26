@@ -56,12 +56,12 @@ SensorManagerInstance.prototype = {
 	*  Send binary data to Self
 	*/
 	sendData: function(sensor, data) {
-		if(isRegistered(sensor)) {
-			topicClient.publish("sensor-proxy-" + sensor.sensorId, data, false);
+		if(this.isRegistered(sensor)) {
+			topicClient.publishBinary("sensor-proxy-" + sensor.sensorId, data, false);
 		}
 		for(var i = 0; i++ < extractorMap.size; extractorMap.next()) {
 			var extractor = extractorMap.value();
-			if(sensor.dataType = extractor.dataType) {
+			if(sensor.dataType == extractor.dataType && extractor.callback != undefined) {
 				extractor.callback(data);
 			}
 		}
