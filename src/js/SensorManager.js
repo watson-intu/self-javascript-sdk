@@ -1,9 +1,32 @@
+/**
+* Copyright 2017 IBM Corp. All Rights Reserved.
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*      http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*
+*/
+
 function SensorManagerInstance() {
 }
 
+/**
+*  This manager initializes all sensors for the local environment. 
+*/
 SensorManagerInstance.prototype = {
 	constructor: SensorManagerInstance,
 
+	/**
+	*  Add a new sensor to Self
+	*/
 	addSensor: function(sensor, override) {
 		var msg = {
 			"event" : "add_sensor_proxy",
@@ -18,6 +41,9 @@ SensorManagerInstance.prototype = {
 		sensorOverrideMap.put(sensor.sensorId, override);
 	},
 
+	/**
+	*  Confirm if sensor is registered to Self
+	*/
 	isRegistered: function(sensor) {
 		var found = sensorMap.get(sensor.sensorId);
 		if(found == undefined) {
@@ -26,6 +52,9 @@ SensorManagerInstance.prototype = {
 		return true
 	},
 
+	/**
+	*  Send binary data to Self
+	*/
 	sendData: function(sensor, data) {
 		if(isRegistered(sensor)) {
 			topicClient.publish("sensor-proxy-" + sensor.sensorId, data, false);
@@ -38,6 +67,9 @@ SensorManagerInstance.prototype = {
 		}
 	},
 
+	/**
+	*  Removes a sensor from Self
+	*/
 	removeSensor: function(sensor) {
 		if(sensorMap.get(sensor.sensorId) != undefined) {
 			sensorMap.remove(sensor.sensorId);
@@ -50,6 +82,9 @@ SensorManagerInstance.prototype = {
 		}
 	},
 
+	/**
+	*  Find all sensors that produce a specified data type
+	*/
 	findSensor: function(dataType) {
 		for(var i = 0; i++ < sensorMap.size; sensorMap.next()) {
 			var sensor = sensorMap.value();
@@ -61,6 +96,9 @@ SensorManagerInstance.prototype = {
 		return undefined;
 	},
 
+	/**
+	*  Have extractor register for all sensors
+	*/
 	registerForSensor: function(extractorId, callback) {
 		if(extractorMap.get(extractorId) != undefined) {
 			if(this.findSensor(extractorMap.get(extractorId).dataType) != undefined) {
@@ -74,18 +112,27 @@ SensorManagerInstance.prototype = {
 
 	},
 
+	/**
+	*  Unregister extractor from sensors
+	*/
 	unregisterForSensor: function(extractorId) {
 		if(extractorMap.get(extractorId) != undefined) {
 			extractorMap.remove(extractorId);
 		}
 	},
 
+	/**
+	*  Iterate through all active sensors
+	*/
 	getSensors: function() {
 		for(var i = 0; i++ < sensorMap.size; sensorMap.next()) {
 			console.log(sensorMap.key() + ": " + sensorMap.value());
 		}
 	},
 
+	/**
+	*  get Event message sent to sensor of interest
+	*/
 	onEvent: function(msg) {
 		var payload = JSON.stringify(msg);
 		var data = JSON.parse(msg["data"]);
@@ -105,10 +152,16 @@ SensorManagerInstance.prototype = {
 		}
 	},
 
+	/**
+	*  Unsubscribe from Self
+	*/
 	shutdown: function() {
 		topicClient.unsubscribe("sensor-manager");
 	},
 
+	/**
+	*  When disconnect occurs
+	*/
 	onDisconnect : function() {
 		for(var i = 0; i++ < sensorMap.size; sensorMap.next()) {
 			var sensor = sensorMap.value();
@@ -116,6 +169,9 @@ SensorManagerInstance.prototype = {
 		}
 	},
 
+	/**
+	*  When reconnect occurs
+	*/
 	onReconnect: function() {
 		for(var i = 0; i++ < sensorMap.size; sensorMap.next()) {
 			var sensor = sensorMap.value();
@@ -133,6 +189,9 @@ SensorManagerInstance.prototype = {
 		}
 	},
 
+	/**
+	*  Subscribes to Self
+	*/
 	start: function() {
 		topicClient.subscribe("sensor-manager", this.onEvent);
 	}
