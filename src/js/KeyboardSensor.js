@@ -19,28 +19,48 @@ function KeyboardSensor() {
 	console.log("keyboard sensor instantiated!");
 }
 
+/**
+*  This is an example of how to implement your own Sensor.
+*  A sensor should interface hardware and produce IData objects
+*/
 KeyboardSensor.prototype = {
 	sensorId: "asdf",
 	sensorName: "keyboard",
 	dataType: "TextData",
 	binaryType: "KeyboardData",
+
+	/**
+	*  Function that will get called to start the sensor
+	*/
 	onStart: function() {
 		console.log("Keyboard Sensor has started!");
 		return true;
 	},
 
+	/**
+	*  Function that will be called to stop the sensor
+	*/
 	onStop: function() {
 		return true;
 	},
 
+	/**
+	*  Pause the sensor
+	*/
 	onPause: function() {
 		return true;
 	},
 
+	/**
+	*  Resume the sensor
+	*/
 	onResume: function() {
 		return true;
 	},
 
+	/**
+	*  Send data feature extractors
+	*/
 	sendData: function(value) {
 		topicClient.publish("conversation", value, false);
 	}

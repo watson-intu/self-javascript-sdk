@@ -18,9 +18,15 @@
 function GestureManagerInstance() {
 }
 
+/**
+*  This manager initializes all gestures for the local environment. 
+*/
 GestureManagerInstance.prototype = {
 	constructor: GestureManagerInstance,
 
+	/**
+	*  add a new gesture to Self
+	*/
 	addGesture: function(gesture, override) {
 		var g = gestureMap.get(gesture.gestureId);
 		if(g == undefined) {
@@ -39,6 +45,9 @@ GestureManagerInstance.prototype = {
 		}
 	},
 
+	/**
+	*  remove a gesture to Self
+	*/
 	removeGesture: function(gesture) {
 		if(gestureMap.get(gesture.gestureId) != undefined) {
 			gestureMap.remove(gesture.gestureId);
@@ -52,6 +61,9 @@ GestureManagerInstance.prototype = {
 		}
 	},
 
+	/**
+	*  Event message from self to gesture of interest
+	*/
 	onEvent: function(msg) {
 		var payload = JSON.stringify(msg);
 		var data = JSON.parse(msg["data"]);
@@ -69,6 +81,9 @@ GestureManagerInstance.prototype = {
 		}
 	},
 
+	/**
+	*  Notification when a gesture has finished
+	*/
 	onGestureDone: function(gestureId, instanceId, error) {
 		var msg = {
 			"event" : "execute_done",
@@ -80,10 +95,16 @@ GestureManagerInstance.prototype = {
 		topicClient.publish("gesture-manager", msg, false);
 	},
 
+	/**
+	*  Unsubscribe to Self
+	*/
 	shutdown: function() {
 		topicClient.unsubscribe("gesture-manager");
 	},
 
+	/**
+	*  on reconnect logic 
+	*/
 	onReconnect: function() {
 		for(var i = 0; i++ < gestureMap.size; gestureMap.next()) {
 			var sensor = gestureMap.value();
@@ -99,6 +120,9 @@ GestureManagerInstance.prototype = {
 		}
 	},
 
+	/**
+	*  Subscribes to remote Self
+	*/
 	start: function() {
 		topicClient.subscribe("gesture-manager", this.onEvent);
 	}

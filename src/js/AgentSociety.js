@@ -19,6 +19,9 @@ function AgentSocietyInstance() {
 	console.log("AgentSociety has been instantiated!!");
 }
 
+/**
+*  This manager initializes all agents for the local environment. 
+*/
 AgentSocietyInstance.prototype = {
 	constructor: AgentSocietyInstance,
 
@@ -33,6 +36,9 @@ AgentSocietyInstance.prototype = {
 		return false;
 	},
 
+	/**
+	*  Add an agent to Self
+	*/
 	addAgent : function(agent, override) {
 		if(agentMap.get(agent.agentId) == undefined) {
 			agentMap.put(agent.agentId, agent);
@@ -48,6 +54,9 @@ AgentSocietyInstance.prototype = {
 		}
 	},
 
+	/**
+	*  Removes an agent from Self
+	*/
 	removeAgent : function(agent) {
 		if(agentMap.get(agent.agentId) != undefined) {
 			agentMap.remove(agent.agentId);
@@ -59,6 +68,9 @@ AgentSocietyInstance.prototype = {
 		}
 	},
 
+	/**
+	*  Event message from Self to an agent of interest
+	*/
 	onEvent : function(msg) {
 		var payload = JSON.stringify(msg);
 		var data = JSON.parse(msg["data"]);
@@ -78,10 +90,16 @@ AgentSocietyInstance.prototype = {
 		}
 	},
 
+	/**
+	*  Unsubscribes from Self
+	*/
 	shutdown : function() {
 		topicClient.unsubscribe("agent-society");
 	},
 
+	/**
+	*  When a disconnect event occurs
+	*/
 	onDisconnect : function() {
 		for(var i = 0; i++ < agentMap.size; agentMap.next()) {
 			var agent = agentMap.value();
@@ -89,6 +107,9 @@ AgentSocietyInstance.prototype = {
 		}
 	},
 
+	/**
+	*  Reconnect logic
+	*/
 	onReconnect : function() {
 		for(var i = 0; i++ < agentMap.size; agentMap.next()) {
 			var agent = agent.value();
@@ -103,6 +124,9 @@ AgentSocietyInstance.prototype = {
 		}
 	},
 
+	/**
+	*  Start the subscription to Self
+	*/
 	start: function() {
 		topicClient.subscribe("agent-society", this.onEvent);
 	}

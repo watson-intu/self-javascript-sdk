@@ -20,9 +20,16 @@ var ExampleAgent = function(agentName, agentId) {
 	this.agentId = agentId;
 }
 
+/**
+*  This is an example of how to implement your own Agent.
+*  An agent should act on what is on the blackboard
+*/
 ExampleAgent.prototype = {
 	constructor: ExampleAgent,
 
+	/**
+	*  Logic on what it should do when an IThing of interest is placed on the blackboard
+	*/
 	onText : function(payload) {
 		var text = payload["m_Text"];
 		if(text[0] == '"' && text[text.length - 1] == '"') {
@@ -34,12 +41,18 @@ ExampleAgent.prototype = {
 
 	},
 
+	/**
+	*  Logic on when an agent starts up to declare what IThing it wants to subscribe to
+	*/
 	onStart : function() {
 		console.log("ExampleAgent OnStart Called!");
 		Blackboard.getInstance().subscribeToType("Text", ThingEventType.ADDED, "", this.onText);
 		return true;
 	},
 
+	/**
+	*  Logic on when an agent stops to declare what IThing it wants to unsubscribe to
+	*/
 	onStop : function() {
 		console.log("ExampleAgent OnStop Called!");
 		return true;

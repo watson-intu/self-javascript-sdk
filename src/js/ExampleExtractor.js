@@ -20,21 +20,34 @@ var ExampleExtractor = function(extractorName, extractorId) {
 	this.extractorId = extractorId;
 }
 
+/**
+*  This is an example of how to implement your own Feature Extractor.
+*  An extractor should subscribe to sensors and place objects on the blackboard
+*/
 ExampleExtractor.prototype = {
 	constructor: ExampleExtractor,
 	dataType: "AudioData",
 	callback: undefined,
 
+	/**
+	*  Callback when AudioData is produced from a sensor
+	*/
 	onAudioData : function(payload) {
 		console.log("Received Received Audio Data! ");
 	},
 
+	/**
+	*  Logic on when an extractor starts up to declare what sensor it wants to subscribe to
+	*/
 	onStart : function() {
 		console.log("ExampleExtractor OnStart Called!");
 		SensorManager.getInstance().registerForSensor(this.extractorId, this.onAudioData);
 		return true;
 	},
 
+	/**
+	*  Logic on when an extractor stops and declare what sensor it wants to unsubscribe from
+	*/
 	onStop : function() {
 		console.log("ExampleExtractor OnStop Called!");
 		SensorManager.getInstance().unregisterForSensor("AudioData");

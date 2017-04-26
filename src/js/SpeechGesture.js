@@ -20,19 +20,32 @@ var SpeechGesture = function(gestureId, instanceId) {
 	this.instanceId = instanceId;
 }
 
+/**
+*  This is an example of how to implement your own gesture.
+*  A gesture is something that produces some type of output
+*/
 SpeechGesture.prototype = {
 	constructor: SpeechGesture,
 
+	/**
+	*  This function gets called when the gesture has been registered to Self
+	*/
 	onStart : function() {
 		console.log("SpeechGesture OnStart Called!");
 		return true;
 	},
 
+	/**
+	*  This function gets called when the gesture is unregistered to Self
+	*/
 	onStop : function() {
 		console.log("SpeechGesture OnStop Called!");
 		return true;
 	},
 
+	/**
+	* This function gets called when Self indicates it needs to execute
+	*/
 	execute : function(params) {
 		var text = params["text"];
 		var language = params["language"];
@@ -46,6 +59,9 @@ SpeechGesture.prototype = {
 		return true;
 	},
 
+	/**
+	*  Aborts current execution of gesture
+	*/
 	abort : function() {
 		return true;
 	}

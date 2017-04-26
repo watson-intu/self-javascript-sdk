@@ -15,6 +15,9 @@
 *
 */
 
+/**
+*  IThing category - which blackboard it gets published to
+*/
 var ThingCategory = {
 	INVALID : -1,
 	PERCEPTION : 0,
@@ -22,6 +25,9 @@ var ThingCategory = {
 	MODEL : 2
 };
 
+/**
+*  Event type to subscribe to
+*/
 var ThingEventType = {
 	NONE : 0,
 	ADDED : 1,
@@ -53,6 +59,9 @@ var Thing = function() {
 	this.parentId = "";
 }
 
+/**
+*  IThing - anything thing that gets placed on a blackboard
+*/
 Thing.prototype = {
 
 	constructor: Thing,

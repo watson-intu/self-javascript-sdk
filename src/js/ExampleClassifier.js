@@ -20,21 +20,33 @@ var ExampleClassifier = function(classifierName, classifierId) {
 	this.classifierId = classifierId;
 }
 
+/**
+*  This is an example of how to implement your own Classifier.
+*  A classifier should refine what is placed on the blackboard
+*/
 ExampleClassifier.prototype = {
 	constructor: ExampleClassifier,
 
+	/**
+	*  Logic on what it should do when an IThing of interest is placed on the blackboard
+	*/
 	onText : function(payload) {
 		var text = payload["m_Text"];
 		console.log("Received Text: " + text);
-
 	},
 
+	/**
+	*  Logic on when a classifier starts up to declare what IThing it wants to subscribe to
+	*/
 	onStart : function() {
 		console.log("ExampleClassifier OnStart Called!");
 		Blackboard.getInstance().subscribeToType("Text", ThingEventType.ADDED, "", this.onText);
 		return true;
 	},
 
+	/**
+	*  Logic on when a classifier stops to declare what IThing it wants to unsubscribe to
+	*/
 	onStop : function() {
 		console.log("ExampleClassifier OnStop Called!");
 		Blackboard.getInstance().unsubscribeToType("Text")

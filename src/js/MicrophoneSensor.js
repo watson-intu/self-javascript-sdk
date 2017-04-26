@@ -19,28 +19,48 @@ function MicrophoneSensor() {
 	console.log("microphone sensor instantiated!");
 }
 
+/**
+*  This is an example of how to implement your own Microphone sensor.
+*  A sensor should interface hardware and produce IData objects
+*/
 MicrophoneSensor.prototype = {
 	sensorId: GUID(),
 	sensorName: "Microphone",
 	dataType: "AudioData",
 	binaryType: "audio/L16;rate=16000;channels=1",
+
+	/**
+	*  Function that will get called to start the sensor
+	*/
 	onStart: function() {
 		console.log("Microphone Sensor has started!");
 		return true;
 	},
 
+	/**
+	*  Function that will be called to stop the sensor
+	*/
 	onStop: function() {
 		return true;
 	},
 
+	/**
+	*  Pause the sensor
+	*/
 	onPause: function() {
 		return true;
 	},
 
+	/*
+	*  Resume the sensor
+	*/
 	onResume: function() {
 		return true;
 	},
 
+	/**
+	*  Send data feature extractors
+	*/
 	sendData: function(value) {
 //		topicClient.publish("conversation", value, false);
 	}

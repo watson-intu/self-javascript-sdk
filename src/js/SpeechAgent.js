@@ -20,9 +20,16 @@ var SpeechAgent = function(agentName, agentId) {
 	this.agentId = agentId;
 }
 
+/**
+*  This is an example of how to implement your own Agent.
+*  This agent is interested when the embodiment is speaking
+*/
 SpeechAgent.prototype = {
 	constructor: SpeechAgent,
 
+	/**
+	*  This function gets called when a Say object is placed on the blackboard
+	*/
 	onText : function(payload) {
 		var text = payload["m_Text"];
 		var formattedText = text.replace(/ *\[[^\]]*]/, '');
@@ -30,6 +37,9 @@ SpeechAgent.prototype = {
 		Api.setWatsonPayload(data);
 	},
 
+	/**
+	*  This function gets called when the agent starts up
+	*/
 	onStart : function() {
 		console.log("SpeechAgent OnStart Called!");
 		Blackboard.getInstance().subscribeToType("Say", ThingEventType.ADDED, "", this.onText);
@@ -37,6 +47,9 @@ SpeechAgent.prototype = {
 		return true;
 	},
 
+	/**
+	*  This function gets called when the agent stops
+	*/
 	onStop : function() {
 		console.log("SpeechAgent OnStop Called!");
 		return true;

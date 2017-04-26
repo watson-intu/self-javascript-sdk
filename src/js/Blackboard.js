@@ -24,9 +24,15 @@ var Subscriber = function(callback, thing_event, path) {
 function BlackboardInstance() {
 }
 
+/**
+*  Blackboard interface to the central publish/subscribe system for all agents, classifies, and extractors
+*/
 BlackboardInstance.prototype = {
 	constructor: BlackboardInstance,
 
+	/**
+	*  Event message from Self to local blackboard
+	*/
 	onEvent: function(msg) {
 		var payload = JSON.stringify(msg);
 		var data = JSON.parse(msg["data"]);
@@ -76,6 +82,9 @@ BlackboardInstance.prototype = {
 		}
 	},
 
+	/**
+	*  Subscribes to a blackboard IThing and provides callback when to be notified
+	*/
 	subscribeToType: function(thing, thing_event, path, callback) {
 		var p = blackboardMap.get(path);
 		if(p == undefined) {
@@ -98,6 +107,9 @@ BlackboardInstance.prototype = {
 		blackboardMap.get(path).get(thing).push(new Subscriber(callback, thing_event, path));
 	},
 
+	/**
+	*  Unsubscribes to a blackboard IThing 
+	*/
 	unsubcribeToType: function(thing, callback, path) {
 		var p = blackboardMap.get(path);
 		if(p != undefined) {
@@ -128,6 +140,9 @@ BlackboardInstance.prototype = {
 		}
 	},
 
+	/**
+	*  Add an IThing to remote Blackboard
+	*/
 	// addThing: function(thing, path) {
 	// 	var msg = {
 	// 		"event" : "add_object",
@@ -141,6 +156,9 @@ BlackboardInstance.prototype = {
 	// 	topicClient.publish(path + "blackboard", msg, false);
 	// },
 
+	/**
+	*  Remove an IThing from remote Blackboard
+	*/
 	removeThing: function(thing, path) {
 		var msg = {
 			"event" : "remove_object",
@@ -149,6 +167,9 @@ BlackboardInstance.prototype = {
 		topicClient.publish(path + "blackboard", msg, false);
 	},
 
+	/**
+	*  Change the state of the IThing on the remote blackboard
+	*/
 	setState: function(thing, state, path) {
 		var msg = {
 			"event" : "set_object_state",
@@ -158,6 +179,9 @@ BlackboardInstance.prototype = {
 		topicClient.publish(path + "blackboard", msg, false);
 	},
 
+	/**
+	*  Set the importance of an IThing on remote blackboard
+	*/
 	setImportance: function(thing, importance, path) {
 		var msg = {
 			"event" : "set_object_importance",

@@ -75,7 +75,9 @@ function TopicClientInstance(host, port) {
 	}
 }
 
-
+/**
+*  Topic Client - low level interface to communicate with Self
+*/
 TopicClientInstance.prototype = {
 	constructor: TopicClientInstance,
 

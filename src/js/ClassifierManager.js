@@ -19,6 +19,9 @@ function ClassifierManagerInstance() {
 	console.log("ClassifierManager has been instantiated!!");
 }
 
+/**
+*  This manager initializes all classifiers for the local environment. 
+*/
 ClassifierManagerInstance.prototype = {
 	constructor: ClassifierManagerInstance,
 
@@ -33,6 +36,9 @@ ClassifierManagerInstance.prototype = {
 		return false;
 	},
 
+	/**
+	*  Add a classifier to Self
+	*/
 	addClassifier : function(classifier, override) {
 		if(classifierMap.get(classifier.classifierId) == undefined) {
 			classifierMap.put(classifier.classifierId, classifier);
@@ -48,6 +54,9 @@ ClassifierManagerInstance.prototype = {
 		}
 	},
 
+	/**
+	*  Remove a classifier to Self
+	*/
 	removeClassifier : function(classifier) {
 		if(classifierMap.get(classifier.classifierId) != undefined) {
 			classifierMap.remove(classifier.classifierId);
@@ -59,6 +68,9 @@ ClassifierManagerInstance.prototype = {
 		}
 	},
 
+	/**
+	*  Event message from Self to classifier of interest
+	*/
 	onEvent : function(msg) {
 		var payload = JSON.stringify(msg);
 		var data = JSON.parse(msg["data"]);
@@ -78,10 +90,16 @@ ClassifierManagerInstance.prototype = {
 		}
 	},
 
+	/**
+	*  Unsubscribes from remote Self
+	*/
 	shutdown : function() {
 		topicClient.unsubscribe("classifier-manager");
 	},
 
+	/**
+	*  Notified when disconnect occurs
+	*/
 	onDisconnect : function() {
 		for(var i = 0; i++ < classifierMap.size; classifierMap.next()) {
 			var classifier = classifierMap.value();
@@ -89,6 +107,9 @@ ClassifierManagerInstance.prototype = {
 		}
 	},
 
+	/**
+	*  Reconnect logic
+	*/
 	onReconnect : function() {
 		for(var i = 0; i++ < classifierMap.size; classifierMap.next()) {
 			var classifier = classifier.value();
@@ -103,6 +124,9 @@ ClassifierManagerInstance.prototype = {
 		}
 	},
 
+	/**
+	*  Start subscription to Self
+	*/
 	start: function() {
 		topicClient.subscribe("classifier-manager", this.onEvent);
 	}
