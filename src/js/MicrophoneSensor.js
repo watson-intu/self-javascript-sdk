@@ -22,6 +22,45 @@ function MicrophoneSensor() {
 
 var micPaused = true;
 
+var resampler = function(sampleRate, audioBuffer, micSensor, callbackProcessAudio) {
+
+  console.log('length: ' + audioBuffer.length + ' ' + sampleRate);
+  var channels = 1;
+  var targetSampleRate = 16000;
+  var numSamplesTarget = audioBuffer.length * targetSampleRate / sampleRate;
+
+  var offlineContext = new OfflineAudioContext(channels, numSamplesTarget, targetSampleRate);
+  var bufferSource = offlineContext.createBufferSource();
+  bufferSource.buffer = audioBuffer;
+
+  // callback that is called when the resampling finishes
+  offlineContext.oncomplete = function(event) {
+    var samplesTarget = event.renderedBuffer.getChannelData(0);
+    console.log('Done resampling: ' + samplesTarget.length + ' samples produced');
+
+  // convert from [-1,1] range of floating point numbers to [-32767,32767] range of integers
+  var index = 0;
+  var volume = 0x7FFF;
+    var pcmEncodedBuffer = new ArrayBuffer(samplesTarget.length*2);    // short integer to byte
+    var dataView = new DataView(pcmEncodedBuffer);
+    for (var i = 0; i < samplesTarget.length; i++) {
+      dataView.setInt16(index, samplesTarget[i]*volume, true);
+      index += 2;
+    }
+
+    // l16 is the MIME type for 16-bit PCM
+    callbackProcessAudio(micSensor,dataView);
+  };
+
+  bufferSource.connect(offlineContext.destination);
+  bufferSource.start(0);
+  offlineContext.startRendering();
+};
+
+function onAudio(sensor, data) {
+    sensorManager.sendData(sensor, data);
+};
+
 /**
 *  This is an example of how to implement your own Microphone sensor.
 *  A sensor should interface hardware and produce IData objects
@@ -31,7 +70,7 @@ MicrophoneSensor.prototype = {
 	sensorName: "Microphone",
 	dataType: "AudioData",
 	binaryType: "audio/L16;rate=16000;channels=1",
-
+    
 	/**
 	*  Function that will get called to start the sensor
 	*/
@@ -39,17 +78,34 @@ MicrophoneSensor.prototype = {
 		console.log("Microphone Sensor has started!");
 		console.log(this, "Microphone object");
 		var micSensor = this;
+        
+        var audio = this.onAudio;
+        
 		var streamAudio = function(stream) {
 	    	var context = new AudioContext();
 	    	var input = context.createMediaStreamSource(stream)
-	    	var processor = context.createScriptProcessor(1024,1,1);
+	    	var processor = context.createScriptProcessor(4096,1,1);
+            input.connect(processor);
+	  //  	var analyser = context.createAnalyser();
 
 	    	processor.connect(context.destination);
 
 	    	processor.onaudioprocess = function(e){
 	      		if(!micPaused) {
-	      			console.log(e.inputBuffer.getChannelData(0)[0]);
-	      			sensorManager.sendData(micSensor, e.inputBuffer);
+                    resampler(this.context.sampleRate, e.inputBuffer, micSensor, onAudio)
+/*					var left = e.inputBuffer.getChannelData(0);
+                    var pcmEncodedBuffer = new ArrayBuffer(left.length * 2);
+                    var dataView = new DataView(pcmEncodedBuffer);
+					var array = new Int16Array(left.length);	
+                    var index = 0;
+                    var volume = 0x7FFF;
+					for(var i = 0; i < left.length; i++) {
+//						array[i] = left[i] * 32768;
+                        dataView.setInt16(index, left[i]*volume, true);
+                        index += 2;
+					}
+                    console.log(dataView);
+	      			sensorManager.sendData(micSensor, dataView); */
 	      		}
 	    	};
   		};
