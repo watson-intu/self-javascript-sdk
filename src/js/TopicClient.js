@@ -24,7 +24,7 @@ function TopicClientInstance(host, port) {
 	// Private variables
 	// TODO: The path to the WebSocket server could be an argument
 	var socket = new WebSocket('ws://' + host + ':' + port + '/stream?selfId=' + selfId + '&orgId=' + orgId + '&token=' + token);
-
+	socket.binaryType = 'arraybuffer';
 
 	socket.onopen = function(event) {
 		console.log('Performing WebSocket handshake');
@@ -93,6 +93,36 @@ TopicClientInstance.prototype = {
 		}
 	},
 
+	sendBinary: function(msg, data) {
+		msg['data'] = data.byteLength;
+		msg['origin'] = selfId + '/.';
+		utf8 = JSON.stringify(msg) + '\0';
+//		var utf8 = unescape(encodeURIComponent(header));
+		console.log(utf8);
+//		console.log(data);
+		var arr = new Uint8Array(utf8.length + data.byteLength);
+		for (var i = 0; i < utf8.length; i++) {
+		    arr[i] = utf8.charCodeAt(i);
+		}
+		var start = 0;
+   //     var dv = new DataView(data.buffer);
+		for (var j = utf8.length + 1; j < arr.length; j++) {
+//            var s = dv.getInt16(start);
+//            arr[j+1] = s >> 8;//dv.getUint8(start);
+//            arr[j] = s &0xff;//dv.getUint8(start+1);//data[start]&0xff;
+            //arr[j+1] = (data[start]&0xff00) >> 8;       
+//            start+=2;
+            arr[j] = data.getUint8(start);
+            start++;
+		}
+		var socket = this.getSocket();
+		if(isConnected) {
+			socket.send(arr)
+		}
+		else
+			console.log("not connected!");
+	},
+
 	subscribe: function(path, callback) {
 		if (subscriptionMap.get(path) == undefined) {
 			subscriptionMap.put(path, callback);
@@ -130,15 +160,17 @@ TopicClientInstance.prototype = {
 	},
 
 	publishBinary: function(path, msg, persisted) {
-
+		data = {};
+		targets = [path];
+		data['targets'] = targets;
+		data['msg'] = 'publish_at';
+		data['binary'] = true;
+		data['persisted'] = persisted;
+		this.sendBinary(data, msg);
 	},
 
 	onPong: function(buffer) {
 		console.log("TopicClient onPong called");
-	},
-
-	sendBinary: function(payload) {
-
 	},
 }
 

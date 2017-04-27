@@ -114,91 +114,6 @@
 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 
-<script>
-  // Get mic_setting from browser localStorage
-  var mic_setting = localStorage.getItem("mic_setting") || 'prompt';
-
-  $(function() {
-    $("#" + mic_setting).prop('checked', true); // set input element corresponding to the initial mic setting to checked
-    $("#auto-mic-label").html($('label[for=' + mic_setting + ']').html()); // set default label based on initial mic setting
-  });
-
-  // update mic_setting variable on click
-  $('#mic-settings').find('li').on('click', function() {
-    mic_setting = $(this)[0].firstChild.id;
-    localStorage.setItem("mic_setting", mic_setting);
-  });
-
-  var recognition = null;
-
-  if (!('webkitSpeechRecognition' in window)) {
-      //Speech API not supported here…
-  } else { //Let’s do some cool stuff :)
-      recognition = new webkitSpeechRecognition();
-      recognition.interimResults = false;
-      recognition.lang = "en-US";
-      recognition.maxAlternatives = 1; //Since from our experience, the highest result is really the best...
-
-      recognition.onstart = function() {
-        //Listening (capturing voice from audio input) started.
-        //This is a good place to give the user visual feedback about that (i.e. flash a red light, etc.)
-        micOn();
-      };
-
-      recognition.onend = function() {
-        //Again – give the user feedback that you are not listening anymore. If you wish to achieve continuous recognition – you can write a script to start the recognizer again here.
-        micOff();
-      };
-
-      recognition.onspeechend = function() {
-        recognition.stop();
-      };
-
-      recognition.onresult = function(recognitionEvent) { //the event holds the results
-        if (typeof recognitionEvent.results === 'undefined') { //Something is wrong…
-          recognition.stop();
-          return;
-        }
-
-        if (recognitionEvent.results.length > 0) {
-          console.log("final results: " + recognitionEvent.results[0][0].transcript);
-          Api.postConversationMessage(recognitionEvent.results[0][0].transcript);
-        }
-      };
-  }
-
-  var mic = document.getElementById('mic-image');
-  var user_input = document.getElementById('user-input');
-  var recording = false;
-
-  function toggleRecognition() {
-    if(recognition === undefined) {
-      return;
-    }
-
-    if(recording !== false) {
-      recording = false;
-      recognition.stop();
-    }
-    else {
-      recognition.start();
-    }
-  }
-
-  function micOn() {
-    user_input.disabled = true;
-    mic.setAttribute('class', 'active-mic');
-    recording = true;
-  }
-
-  function micOff() {
-    console.log("Turning off the mic.");
-    user_input.disabled = false;
-    mic.setAttribute('class', 'inactive-mic');
-    recording = false;
-  }
-</script>
-
 <script type="text/javascript">
       var sensorMap = new Map;
       var sensorOverrideMap = new Map;
@@ -241,14 +156,54 @@
       sensorManager.start();  
       sensorManager.addSensor(keyboard, true);
       sensorManager.addSensor(microphone, true);
-      featureExtractor.start();
-      featureExtractor.addExtractor(exampleExtractor, false);
+//      featureExtractor.start();
+//      featureExtractor.addExtractor(exampleExtractor, false);
 
     </script> 
-    <script src="vendor.min.js"></script>
-    <script src="howler.min.js"></script>
+<script>
+  // Get mic_setting from browser localStorage
+  var mic_setting = localStorage.getItem("mic_setting") || 'prompt';
+
+  $(function() {
+    $("#" + mic_setting).prop('checked', true); // set input element corresponding to the initial mic setting to checked
+    $("#auto-mic-label").html($('label[for=' + mic_setting + ']').html()); // set default label based on initial mic setting
+  });
+
+  // update mic_setting variable on click
+  $('#mic-settings').find('li').on('click', function() {
+    mic_setting = $(this)[0].firstChild.id;
+    localStorage.setItem("mic_setting", mic_setting);
+  });
+
+  var mic = document.getElementById('mic-image');
+  var user_input = document.getElementById('user-input');
+  var recording = false;
+
+  function toggleRecognition() {
+    if(recording !== false) {
+      recording = false;
+      micOff();
+      microphone.onPause();
+    }
+    else {
+      micOn();
+      microphone.onResume();
+    }
+  }
+
+  function micOn() {
+    user_input.disabled = true;
+    mic.setAttribute('class', 'active-mic');
+    recording = true;
+  }
+
+  function micOff() {
+    user_input.disabled = false;
+    mic.setAttribute('class', 'inactive-mic');
+    recording = false;
+  }
+</script>
     <script src="conversation.min.js"></script>
-    <script src="ibm/watson-speech.min.js"></script>
 </body>
 
 </html>
