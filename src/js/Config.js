@@ -14,7 +14,7 @@ ConfigInstance.prototype = {
    },
 
 	shutdown : function() {
-			topicClient.unsubscribe("agent-society");
+			topicClient.unsubscribe("config");
 	},
 
 	onConfig : function(payload) {
