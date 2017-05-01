@@ -93,19 +93,6 @@ MicrophoneSensor.prototype = {
 	    	processor.onaudioprocess = function(e){
 	      		if(!micPaused) {
                     resampler(this.context.sampleRate, e.inputBuffer, micSensor, onAudio)
-/*					var left = e.inputBuffer.getChannelData(0);
-                    var pcmEncodedBuffer = new ArrayBuffer(left.length * 2);
-                    var dataView = new DataView(pcmEncodedBuffer);
-					var array = new Int16Array(left.length);	
-                    var index = 0;
-                    var volume = 0x7FFF;
-					for(var i = 0; i < left.length; i++) {
-//						array[i] = left[i] * 32768;
-                        dataView.setInt16(index, left[i]*volume, true);
-                        index += 2;
-					}
-                    console.log(dataView);
-	      			sensorManager.sendData(micSensor, dataView); */
 	      		}
 	    	};
   		};

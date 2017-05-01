@@ -104,7 +104,7 @@ Thing.prototype = {
 		this.body = json;
 		this.type = json["Type_"];
 		this.category = json["m_eCategory"];
-		this.guid = json["m_GUID"];
+		this.guid = json["GUID_"];
 		this.state = json["m_State"];
 		if(json.hasOwnProperty('m_fImportance')) {
 			this.importance = json["m_fImportance"];
@@ -168,7 +168,7 @@ Thing.prototype = {
 
 		msg["Type_"] = this.thingType;
 		msg["m_eCategory"] = this.category;
-		msg["m_GUID"] = this.guid;
+		msg["GUID_"] = this.guid;
 		msg["m_fImportance"] = this.importance;
 		msg["m_State"] = this.state;
 		msg["m_fLifeSpan"] = this.life_span;
