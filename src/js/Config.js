@@ -1,9 +1,3 @@
-var Subscriber = function(callback, thing_event, path) {
-	this.callback = callback;
-	this.thing_event = thing_event;
-	this.path = path;
-}
-
 function ConfigInstance() {
 }
 
