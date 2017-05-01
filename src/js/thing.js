@@ -33,7 +33,10 @@ var ThingEventType = {
 	ADDED : 1,
 	REMOVED : 2,
 	STATE : 4,
-	IMPORTANCE : 8
+	IMPORTANCE : 8,
+    GUID : 10,
+    DATA : 20,
+    ALL : 255
 };
 
 function S4() {

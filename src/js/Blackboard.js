@@ -97,7 +97,7 @@ BlackboardInstance.prototype = {
 			var msg = {
 				"event" : "subscribe_to_type",
 				"type" : thing,
-				"event_mask" : thing_event
+				"event_mask" : ThingEventType.ALL
 			};
 			topicClient.publish(path + "blackboard", msg, false);
 			var list = [];
