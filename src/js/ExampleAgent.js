@@ -40,6 +40,15 @@ ExampleAgent.prototype = {
 //		addChatText("John", text);
 
 	},
+    
+    onIntent : function(payload) {
+        var data = JSON.stringify(payload);
+        console.log(data);
+        var thing = new Thing();
+        thing.deserialize(payload);
+        console.log(thing.guid);
+        Blackboard.getInstance().getParent(thing, "");
+    },
 
 	/**
 	*  Logic on when an agent starts up to declare what IThing it wants to subscribe to
@@ -47,6 +56,7 @@ ExampleAgent.prototype = {
 	onStart : function() {
 		console.log("ExampleAgent OnStart Called!");
 		Blackboard.getInstance().subscribeToType("Text", ThingEventType.ADDED, "", this.onText);
+        Blackboard.getInstance().subscribeToType("IIntent", ThingEventType.ADDED, "", this.onIntent);
 		return true;
 	},
 

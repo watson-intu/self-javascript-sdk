@@ -36,6 +36,7 @@ BlackboardInstance.prototype = {
 	onEvent: function(msg) {
 		var payload = JSON.stringify(msg);
 		var data = JSON.parse(msg["data"]);
+        console.log(data);
 		var thing = new Thing();
 		var thingEvent = new ThingEvent();
 		thingEvent.setThingEvent(ThingEventType.NONE);
@@ -189,7 +190,16 @@ BlackboardInstance.prototype = {
 			"importance" : importance
 		};
 		topicClient.publish(path + "blackboard", msg, false);
-	}
+	},
+    
+    getParent: function(thing, path) {
+        var msg = {
+            "event" : "get_parent",
+            "thing_guid" : thing.getGUID()
+        };
+        console.log(thing.getGUID());
+        topicClient.publish(path + "blackboard", msg, false);
+    }
 
 }
 
