@@ -36,7 +36,6 @@ BlackboardInstance.prototype = {
 	onEvent: function(msg) {
 		var payload = JSON.stringify(msg);
 		var data = JSON.parse(msg["data"]);
-        console.log(data);
 		var thing = new Thing();
 		var thingEvent = new ThingEvent();
 		thingEvent.setThingEvent(ThingEventType.NONE);
