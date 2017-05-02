@@ -189,7 +189,16 @@ BlackboardInstance.prototype = {
 			"importance" : importance
 		};
 		topicClient.publish(path + "blackboard", msg, false);
-	}
+	},
+    
+    getParent: function(thing, path) {
+        var msg = {
+            "event" : "get_parent",
+            "thing_guid" : thing.getGUID()
+        };
+        console.log(thing.getGUID());
+        topicClient.publish(path + "blackboard", msg, false);
+    }
 
 }
 
