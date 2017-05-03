@@ -37,6 +37,7 @@
     <script src="../js/ExampleClassifier.js" type="text/javascript"></script>
     <script src="../js/FeatureExtractor.js" type="text/javascript"></script>
     <script src="../js/ExampleExtractor.js" type="text/javascript"></script>
+	<script src="../js/Config.js" type="text/javascript"></script>
 
     <link rel="stylesheet" href="css/main.min.css">
 
@@ -139,6 +140,7 @@
       var sensorManager = SensorManager.getInstance();
       var classifierManager = ClassifierManager.getInstance();
       var featureExtractor = FeatureExtractor.getInstance();
+	  var config = Config.getInstance();
       var speechGesture = new SpeechGesture("tts", GUID());
       var exampleAgent = new ExampleAgent("ExampleAgent", GUID());
       var speechAgent = new SpeechAgent("SpeechAgent", GUID());
