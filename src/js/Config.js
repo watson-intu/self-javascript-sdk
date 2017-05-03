@@ -92,7 +92,16 @@ ConfigInstance.prototype = {
 			"event" : "get_config",
 		};
 		topicClient.publish("config", msg, false);
-	}	
+	},
+    
+    setCredentials: function(user, pass, path) {
+        var msg = {
+            "event" : "config_topic_manager",
+            "username" : user,
+            "password" : pass
+        };
+        topicClient.publish(path + "config", msg, false);
+    }
 
 }
 
