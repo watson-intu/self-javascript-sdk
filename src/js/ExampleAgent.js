@@ -57,6 +57,7 @@ ExampleAgent.prototype = {
 		console.log("ExampleAgent OnStart Called!");
 		Blackboard.getInstance().subscribeToType("Text", ThingEventType.ADDED, "", this.onText);
         Blackboard.getInstance().subscribeToType("IIntent", ThingEventType.ADDED, "", this.onIntent);
+        Config.getInstance().setCredentials("user", "pass", "");
 		return true;
 	},
 
