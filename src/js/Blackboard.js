@@ -110,7 +110,7 @@ BlackboardInstance.prototype = {
 	/**
 	*  Unsubscribes to a blackboard IThing 
 	*/
-	unsubcribeToType: function(thing, callback, path) {
+	unsubscribeToType: function(thing, callback, path) {
 		var p = blackboardMap.get(path);
 		if(p != undefined) {
 			var t = blackboardMap.get(path).get(thing);
